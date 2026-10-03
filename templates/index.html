@@ -1,0 +1,3286 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090C11">
+<title>Flight Finder</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230E4C92'/%3E%3Crect x='2.5' y='2.5' width='27' height='27' rx='4' fill='none' stroke='white' stroke-width='1.5'/%3E%3Cpath transform='translate(4 4)' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3.6.0/air-datepicker.css" integrity="sha384-9XWomYbHrN6hOYnZMlenoPJDFmpxVgxERqu0DkDsexo2ffA7HkdoI8ROYCWMFkOz" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.6.0/air-datepicker.js" integrity="sha384-NPBiBhnpeWwcn7ve8/Uqp2u57dxXh3QdvTfHqkBgLk238FpkrjF7S7iCdBCU07dc" crossorigin="anonymous"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+[hidden] { display: none !important; }
+
+:root {
+  color-scheme: dark;
+  --yellow: #FFD100;
+  --yellow-2: #F2C200;
+  --blue: #0E4C92;
+  --blue-2: #0A3B73;
+  --blue-3: #1C5CA6;
+  --on-blue: #FFFFFF;
+  --on-blue-2: rgba(255, 255, 255, 0.8);
+  --on-blue-3: rgba(255, 255, 255, 0.68);
+  --on-blue-rule: rgba(255, 255, 255, 0.26);
+  --on-yellow: #141A24;
+
+  --font: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r-sign: 10px;
+  --r-ctl: 6px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --paper: #0D1117;
+  --page: #161C25;
+  --page-hover: #1D2530;
+  --raised: #2A3546;
+  --ink: #ECEFF3;
+  --ink-2: #B7C0CC;
+  --ink-3: #8F99A8;
+  --faint: #4A5463;
+  --rule: #2E3846;
+  --rule-2: #232B36;
+  --red: #FF9389;
+  --red-bg: rgba(255, 100, 90, 0.12);
+  --red-rule: rgba(255, 120, 110, 0.35);
+  --line: #5E9EEA;
+  --focus: #8DBBF3;
+  --chip-hover: #D3D9E1;
+  --seg-track: #0D1117;
+  --seg-on: var(--raised);
+  --field-bg: var(--blue-2);
+  --field-ink: var(--on-blue);
+  --field-placeholder: var(--on-blue-3);
+  --field-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+  --cover-bg: #090C11;
+  --cover-ink: var(--yellow);
+  --cover-ink-2: var(--ink-3);
+  --cover-rule: var(--yellow);
+  --popover-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B7C0CC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-color: var(--rule) transparent;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--paper);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  caret-color: var(--blue);
+}
+
+::selection { background: var(--yellow); color: var(--on-yellow); }
+
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.vh {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.icon {
+  width: 1.25em; height: 1.25em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon-sm { width: 1em; height: 1em; }
+.glyph { fill: currentColor; stroke: none; }
+
+/* ── Cover band ───────────────────────── */
+
+.cover {
+  background: var(--cover-bg);
+  border-bottom: 4px solid var(--cover-rule);
+}
+
+.cover-inner {
+  max-width: 1320px;
+  min-height: 72px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 40px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-stretch: 72%;
+  font-weight: 850;
+  font-size: 1.875rem;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  color: var(--cover-ink);
+  white-space: nowrap;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  background: var(--blue);
+  color: var(--on-blue);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 2.5px var(--blue), inset 0 0 0 4px var(--on-blue);
+}
+.mark .icon { width: 19px; height: 19px; }
+
+.promise {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--cover-ink-2);
+  text-align: right;
+  text-wrap: balance;
+}
+
+
+/* ── Layout ───────────────────────────── */
+
+.layout {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 28px 24px 72px;
+  display: grid;
+  grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+.planner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+.output { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; min-width: 0; }
+.planner > *, .output > * { min-width: 0; }
+
+/* ── Recent searches ──────────────────── */
+
+.recent { display: grid; gap: 8px; }
+
+.recent-title {
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+.recent-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-ctl);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.tag:hover { border-color: var(--ink-3); }
+
+.tag-go, .tag-x {
+  background: none;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+}
+
+.tag-go {
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+.tag-go b { font-weight: 750; color: var(--ink); }
+.tag-go:hover { background: var(--page-hover); }
+
+.tag-x {
+  padding: 6px 9px;
+  border-left: 1px solid var(--rule-2);
+  color: var(--ink-3);
+}
+.tag-x:hover { color: var(--red); background: var(--red-bg); }
+.tag-go:focus-visible, .tag-x:focus-visible { outline-offset: -3px; }
+
+/* ── Signs ────────────────────────────── */
+
+.sign {
+  --focus: var(--yellow);
+  border: 0;
+  padding: 18px 18px 16px;
+  min-width: 0;
+  background: var(--blue);
+  color: var(--on-blue);
+  border-radius: var(--r-sign);
+  box-shadow: inset 0 0 0 4px var(--blue), inset 0 0 0 6px var(--on-blue);
+}
+
+.sign-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.sign-head .glyph { width: 26px; height: 26px; }
+
+.sign-title {
+  font-stretch: 72%;
+  font-weight: 850;
+  font-size: 1.875rem;
+  line-height: 1;
+}
+
+.sign-input {
+  width: 100%;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: var(--field-bg);
+  color: var(--field-ink);
+  box-shadow: var(--field-ring);
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 12px 14px;
+  line-height: 1.2;
+  caret-color: currentColor;
+}
+.sign-input::placeholder { color: var(--field-placeholder); font-weight: 450; }
+.sign-input--home { font-size: 1.0625rem; padding: 10px 12px; }
+
+.home-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.home-row label { font-weight: 650; color: var(--on-blue-2); }
+.home-place {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.9375rem;
+  color: var(--on-blue-2);
+}
+.home-place .icon { flex: none; }
+
+.sign-msg {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  font-weight: 550;
+  color: var(--on-blue);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.sign-msg:empty { display: none; }
+.sign-msg .icon { color: var(--yellow); margin-top: 1px; }
+
+.signpost {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  border-top: 1px solid var(--on-blue-rule);
+  transition: opacity 0.2s;
+}
+.signpost:empty { display: none; }
+.signpost[aria-busy="true"] { opacity: 0.6; }
+
+.post {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto 22px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 6px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--on-blue-rule);
+  color: var(--on-blue);
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+.post:hover { background: rgba(255, 255, 255, 0.07); }
+.post:focus-visible { outline-offset: -3px; }
+
+.post-code {
+  font-stretch: 78%;
+  font-weight: 800;
+  font-size: 1.1875rem;
+  letter-spacing: 0.01em;
+}
+.post-city {
+  font-size: 1rem;
+  font-weight: 550;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.post-km { font-size: 0.9375rem; color: var(--on-blue-2); }
+
+.post-check {
+  width: 22px; height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  background: var(--on-blue);
+  color: var(--blue);
+  border: 2px solid var(--on-blue);
+  transition: background 0.15s;
+}
+.post-check .icon { width: 15px; height: 15px; stroke-width: 3; }
+
+.post[aria-pressed="false"] { color: var(--on-blue-3); }
+.post[aria-pressed="false"] .post-code,
+.post[aria-pressed="false"] .post-city {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.post[aria-pressed="false"] .post-km { color: var(--on-blue-3); }
+.post[aria-pressed="false"] .post-check { background: transparent; border-color: var(--on-blue-3); }
+.post[aria-pressed="false"] .post-check .icon { visibility: hidden; }
+
+.post-skel {
+  height: 45px;
+  border-bottom: 1px solid var(--on-blue-rule);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 6px;
+}
+.post-skel::before, .post-skel::after {
+  content: '';
+  height: 12px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  animation: skel 1.1s ease-in-out infinite alternate;
+}
+.post-skel::before { width: 2.6rem; }
+.post-skel::after { width: 40%; }
+
+@keyframes skel { to { background: rgba(255, 255, 255, 0.3); } }
+
+.sign-hint {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  color: var(--on-blue-2);
+}
+
+.sign-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin-top: 14px;
+  font-size: 0.9375rem;
+  color: var(--on-blue-2);
+}
+
+.glyph--back { transform: scaleX(-1); }
+
+.sign > .seg { margin-top: 2px; }
+
+.ret-custom { display: grid; gap: 4px; }
+.ret-part { padding-top: 16px; margin-top: 14px; border-top: 1px solid var(--on-blue-rule); }
+.ret-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.sign-sub {
+  font-stretch: 72%;
+  font-weight: 850;
+  font-size: 1.375rem;
+  line-height: 1;
+}
+.ret-part .signpost { margin-top: 0; }
+.ret-part > .seg + .sign-hint { margin-bottom: 4px; }
+#ret-to-choose { margin-top: 12px; }
+
+.sign-link {
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  color: var(--on-blue);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--on-blue-3);
+}
+.sign-link:hover { text-decoration-color: currentColor; }
+
+.post-add { margin-top: 10px; }
+.post-add-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 10px 6px 6px;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: transparent;
+  color: var(--on-blue);
+  font-weight: 650;
+  font-size: 0.9375rem;
+}
+.post-add-open:hover { background: rgba(255, 255, 255, 0.08); }
+.post-add-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+}
+.combo { position: relative; min-width: 0; }
+.post-add-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: var(--field-bg);
+  color: var(--field-ink);
+  box-shadow: var(--field-ring);
+  padding: 9px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.post-add-input::placeholder { color: var(--field-placeholder); font-weight: 450; }
+
+.combo-list {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  left: 0;
+  width: max(100%, 300px);
+  max-height: 340px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  padding: 4px;
+  margin: 0;
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  box-shadow: var(--popover-shadow);
+  color: var(--ink);
+}
+.combo-opt {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px 10px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.combo-opt[aria-selected="true"] { background: var(--raised); }
+.combo-opt:hover:not([aria-selected="true"]) { background: var(--page-hover); }
+.opt-code {
+  font-stretch: 78%;
+  font-weight: 800;
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+}
+.opt-main { display: grid; min-width: 0; }
+.opt-city { font-weight: 650; }
+.opt-name {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.opt-side { display: grid; justify-items: end; gap: 1px; }
+.opt-km { font-size: 0.875rem; color: var(--ink-2); white-space: nowrap; }
+.opt-state { font-size: 0.75rem; font-weight: 650; color: var(--ink-3); white-space: nowrap; }
+.combo-opt--place .opt-code { display: grid; color: var(--ink-2); }
+.combo-opt--place + .combo-opt { margin-top: 5px; position: relative; }
+.combo-opt--place + .combo-opt::before {
+  content: "";
+  position: absolute;
+  inset: -3px 10px auto;
+  border-top: 1px solid var(--rule-2);
+}
+.combo-note {
+  padding: 10px 12px;
+  font-size: 0.9375rem;
+  color: var(--ink-3);
+}
+.post-add-cancel {
+  width: 40px;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: transparent;
+  color: var(--on-blue-2);
+  display: grid;
+  place-items: center;
+}
+.post-add-cancel:hover { background: rgba(255, 255, 255, 0.08); color: var(--on-blue); }
+
+/* ── Segmented control ────────────────── */
+
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-ctl);
+  background: var(--seg-track);
+  border: 0;
+  min-width: 0;
+}
+
+.seg label { position: relative; display: block; }
+
+.seg input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.seg input:disabled { cursor: not-allowed; }
+
+.seg span {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 4px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.seg label:hover span { color: var(--ink); }
+.seg input:checked + span {
+  background: var(--seg-on);
+  color: var(--ink);
+}
+.seg input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 1px; }
+.seg input:disabled + span { color: var(--ink-3); opacity: 0.55; }
+
+.seg--sign { background: var(--blue-2); }
+.seg--sign span { color: var(--on-blue-2); }
+.seg--sign label:hover span { color: var(--on-blue); }
+.seg--sign input:checked + span { background: var(--on-blue); color: var(--blue); box-shadow: none; }
+
+.seg--fill { display: flex; }
+.seg--fill label { flex: 1; }
+.seg--fill span { text-align: center; padding-inline: 6px; }
+
+/* ── Paper page (dates) ───────────────── */
+
+.page {
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sign);
+  padding: 18px;
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.page-title {
+  font-stretch: 72%;
+  font-weight: 850;
+  font-size: 1.625rem;
+  line-height: 1;
+  padding: 0;
+  float: left;
+  width: 100%;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field { display: grid; gap: 6px; min-width: 0; }
+
+.field-label {
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--ink-2);
+}
+.field-label small { font-weight: 450; font-size: inherit; color: var(--ink-3); }
+
+.flex-rows { display: grid; gap: 6px; }
+.flex-row {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+.flex-row[hidden] { display: none; }
+.flex-dir { font-size: 0.9375rem; font-weight: 650; color: var(--ink-2); }
+
+.control {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-ctl);
+  background: var(--page);
+  font-size: 1rem;
+  font-weight: 550;
+  transition: border-color 0.15s;
+}
+.control:hover { border-color: var(--ink-3); }
+.control:focus-visible { outline-offset: 1px; border-color: var(--focus); }
+.control[aria-invalid="true"] { border-color: var(--red); }
+
+select.control {
+  appearance: none;
+  padding-right: 36px;
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 18px;
+}
+
+.date-field { position: relative; }
+.date-field .control {
+  padding-left: 40px;
+  cursor: pointer;
+  font-weight: 650;
+}
+.date-field .control::placeholder { color: var(--ink-3); font-weight: 450; }
+.date-field .cal {
+  position: absolute;
+  left: 12px; top: 50%;
+  width: 18px; height: 18px;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.date-clear {
+  position: absolute;
+  right: 4px; top: 50%;
+  transform: translateY(-50%);
+  width: 38px; height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-3);
+}
+.date-clear:hover { color: var(--ink); background: var(--page-hover); }
+.date-field:has(.date-clear:not([hidden])) .control { padding-right: 44px; }
+
+/* ── Date picker (Air Datepicker) ─────── */
+
+.air-datepicker {
+  --adp-font-family: var(--font);
+  --adp-font-size: 15px;
+  --adp-width: 304px;
+  --adp-padding: 8px;
+  --adp-day-cell-height: 38px;
+  --adp-nav-height: 40px;
+  --adp-nav-action-size: 36px;
+  --adp-background-color: var(--page);
+  --adp-background-color-hover: var(--page-hover);
+  --adp-background-color-active: var(--raised);
+  --adp-color: var(--ink);
+  --adp-color-secondary: var(--ink-3);
+  --adp-accent-color: var(--line);
+  --adp-color-current-date: var(--line);
+  --adp-color-other-month: var(--faint);
+  --adp-color-other-month-hover: var(--ink-3);
+  --adp-color-disabled: var(--faint);
+  --adp-color-disabled-in-range: var(--faint);
+  --adp-day-name-color: var(--ink-3);
+  --adp-day-name-color-hover: var(--ink);
+  --adp-nav-arrow-color: var(--ink-2);
+  --adp-border-color: var(--rule);
+  --adp-border-color-inner: var(--rule-2);
+  --adp-border-color-inline: var(--rule);
+  --adp-border-radius: var(--r-sign);
+  --adp-cell-border-radius: 6px;
+  --adp-cell-background-color-selected: var(--yellow);
+  --adp-cell-background-color-selected-hover: var(--yellow-2);
+  --adp-cell-background-color-in-range: color-mix(in srgb, var(--yellow) 16%, transparent);
+  --adp-cell-background-color-in-range-hover: color-mix(in srgb, var(--yellow) 26%, transparent);
+  --adp-btn-color: var(--ink);
+  --adp-btn-color-hover: var(--ink);
+  --adp-btn-height: 40px;
+  --adp-btn-border-radius: var(--r-ctl);
+  --adp-overlay-background-color: rgba(0, 0, 0, 0.55);
+  --adp-mobile-width: min(340px, calc(100vw - 24px));
+  --adp-mobile-day-cell-height: 44px;
+  --adp-mobile-nav-height: 44px;
+  box-shadow: var(--popover-shadow);
+}
+.air-datepicker--pointer { display: none; }
+.air-datepicker-nav--title { font-weight: 750; color: var(--ink); }
+.air-datepicker-nav--title i { font-style: normal; color: var(--ink-3); font-weight: 500; }
+.air-datepicker-body--day-name { font-size: 0.8125rem; font-weight: 650; text-transform: none; }
+.air-datepicker-cell { font-variant-numeric: tabular-nums; }
+.air-datepicker-cell.-day-.-current- { font-weight: 800; }
+.air-datepicker-cell.-selected-,
+.air-datepicker-cell.-selected-.-current-,
+.air-datepicker-cell.-selected-.-focus- { color: var(--on-yellow); font-weight: 800; }
+.air-datepicker-cell.-departure- {
+  color: var(--on-yellow);
+  background: var(--yellow);
+  font-weight: 800;
+  opacity: 1;
+}
+.air-datepicker-cell.-return-:not(.-selected-) {
+  box-shadow: inset 0 0 0 2px var(--yellow);
+  font-weight: 800;
+}
+.air-datepicker-cell.-between- { background: var(--adp-cell-background-color-in-range); border-radius: 0; }
+.air-datepicker-buttons { display: flex; }
+.air-datepicker-button { font-weight: 650; flex: 1; }
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-ctl);
+  overflow: hidden;
+  width: max-content;
+}
+.stepper button {
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--page);
+  border: 0;
+  color: var(--ink-2);
+}
+.stepper button:hover:not(:disabled) { background: var(--page-hover); color: var(--ink); }
+.stepper button:disabled { color: var(--rule); cursor: not-allowed; }
+.stepper button:focus-visible { outline-offset: -3px; }
+.stepper output {
+  min-width: 2.75rem;
+  text-align: center;
+  font-weight: 750;
+  font-size: 1.125rem;
+  border-inline: 1px solid var(--rule-2);
+  line-height: 44px;
+}
+
+.field-msg {
+  font-size: 0.9375rem;
+  font-weight: 550;
+  color: var(--red);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.field-msg:empty { display: none; }
+.field-msg .icon { margin-top: 1px; }
+
+/* ── More options ─────────────────────── */
+
+.more {
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sign);
+}
+
+.more summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  border-radius: var(--r-sign);
+}
+.more summary::-webkit-details-marker { display: none; }
+.more summary:hover { background: var(--page-hover); }
+.more summary:focus-visible { outline-offset: -3px; }
+
+.more-title { font-weight: 700; }
+.more-sum {
+  flex: 1;
+  font-size: 0.9375rem;
+  color: var(--ink-3);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.more .chev { color: var(--ink-3); transition: transform 0.2s var(--ease-out); }
+.more[open] .chev { transform: rotate(180deg); }
+
+.more-body {
+  padding: 4px 18px 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.hint { font-size: 0.875rem; color: var(--ink-3); max-width: 60ch; }
+
+/* ── Go button ────────────────────────── */
+
+/* The search action stays in reach while the planner scrolls past. */
+.go {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: grid;
+  gap: 8px;
+  margin-top: -12px;
+  padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+  background: var(--paper);
+}
+
+.btn-go {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 22px;
+  border: 0;
+  border-radius: var(--r-sign);
+  background: var(--yellow);
+  color: var(--on-yellow);
+  box-shadow: inset 0 0 0 4px var(--yellow), inset 0 0 0 6px var(--on-yellow);
+  font-stretch: 72%;
+  font-weight: 850;
+  font-size: 1.75rem;
+  line-height: 1;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.btn-go .glyph { width: 30px; height: 30px; transition: transform 0.2s var(--ease-out); }
+.btn-go:hover:not(:disabled) { background: var(--yellow-2); box-shadow: inset 0 0 0 4px var(--yellow-2), inset 0 0 0 6px var(--on-yellow); }
+.btn-go:hover:not(:disabled) .glyph { transform: translateX(4px); }
+.btn-go:active:not(:disabled) { transform: translateY(1px); }
+.btn-go:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.btn-go:disabled { cursor: progress; }
+.btn-go[aria-busy="true"] .glyph { animation: nudge 0.9s ease-in-out infinite; }
+
+@keyframes nudge { 50% { transform: translateX(5px); } }
+
+.go-meta { font-size: 0.9375rem; color: var(--ink-2); }
+.go-meta b { color: var(--ink); font-weight: 750; }
+
+/* ── Panels on the right ──────────────── */
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-bottom: 14px;
+}
+
+.panel-title {
+  font-stretch: 72%;
+  font-weight: 850;
+  font-size: 1.875rem;
+  line-height: 1;
+}
+
+.status {
+  font-size: 1rem;
+  color: var(--ink-2);
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+.board > .status { margin: -4px 0 16px; }
+.status b { color: var(--ink); font-weight: 750; }
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.progress[hidden] { display: none; }
+
+.progress-track {
+  position: relative;
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--rule-2);
+  overflow: hidden;
+}
+/* Before the first route returns, a moving segment shows the search is alive. */
+.progress[data-idle] .progress-track::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  border-radius: 4px;
+  background: var(--line);
+  opacity: 0.6;
+  animation: sweep 1.2s var(--ease-out) infinite;
+}
+@keyframes sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(340%); }
+}
+.progress-fill {
+  height: 100%;
+  background: var(--line);
+  border-radius: 4px;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  transition: transform 0.35s var(--ease-out);
+}
+.progress-text { font-size: 0.9375rem; font-weight: 650; color: var(--ink-2); white-space: nowrap; }
+
+.btn-stop {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-ctl);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  font-weight: 650;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-stop:hover { border-color: var(--ink-3); color: var(--ink); }
+
+.stale {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  color: var(--ink-2);
+}
+.stale b { color: var(--ink); font-weight: 750; }
+.btn-again {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: var(--ink);
+  color: var(--page);
+  font-weight: 700;
+  transition: background 0.15s;
+}
+.btn-again:hover { background: var(--chip-hover); }
+.is-stale .matrix-wrap, .is-stale .result-list { opacity: 0.55; filter: grayscale(1); transition: opacity 0.2s, filter 0.2s; }
+
+.alert {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-rule);
+  border-radius: 8px;
+  color: var(--red);
+  font-weight: 550;
+}
+.alert[hidden] { display: none; }
+.alert .icon { margin-top: 2px; }
+
+/* ── Price table ──────────────────────── */
+
+.matrix-wrap {
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sign);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.matrix {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.matrix th, .matrix td {
+  border-top: 1px solid var(--rule-2);
+  padding: 0;
+  vertical-align: middle;
+}
+.matrix td { border-left: 1px solid var(--rule-2); }
+
+.matrix thead th {
+  border-top: 0;
+  background: var(--blue);
+  color: var(--on-blue);
+  padding: 12px 14px;
+  text-align: right;
+  font-weight: 500;
+}
+.matrix thead th:first-child { text-align: left; border-top-left-radius: calc(var(--r-sign) - 1px); }
+.matrix thead th:last-child { border-top-right-radius: calc(var(--r-sign) - 1px); }
+.matrix thead th + th { border-left: 1px solid var(--on-blue-rule); }
+
+.m-corner { font-size: 0.875rem; color: var(--on-blue-2); white-space: nowrap; }
+
+.m-code {
+  display: block;
+  font-stretch: 78%;
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+.m-city {
+  display: block;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+thead .m-city { color: var(--on-blue-2); }
+tbody .m-city { color: var(--ink-3); }
+
+.matrix tbody th {
+  text-align: left;
+  padding: 10px 14px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--page);
+  font-weight: 500;
+  min-width: 9.5rem;
+}
+
+.m-cell {
+  position: relative;
+  width: 100%;
+  min-width: 6.5rem;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 14px 14px;
+  border: 0;
+  background: transparent;
+  font-size: 1.1875rem;
+  font-weight: 750;
+  color: var(--ink);
+  transition: background 0.3s, color 0.3s;
+}
+.m-cell:disabled { cursor: default; }
+.m-cell:not(:disabled):hover { background: var(--page-hover); }
+.m-cell:focus-visible { outline-offset: -3px; }
+
+.m-cell[data-state="idle"],
+.m-cell[data-state="wait"],
+.m-cell[data-state="busy"] { color: var(--ink-3); font-weight: 500; }
+.m-cell[data-state="none"] { color: var(--ink-3); font-size: 0.9375rem; font-weight: 500; }
+.m-cell[data-state="best"],
+.m-cell[data-state="best"]:hover { background: var(--yellow); color: var(--on-yellow); font-weight: 800; }
+.m-cell[aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--ink); }
+.m-cell[data-state="best"][aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--on-yellow); }
+
+.m-cell.is-new .m-price { animation: priceIn 0.45s var(--ease-out); }
+
+@keyframes priceIn {
+  from { opacity: 0; transform: translateY(6px); filter: blur(3px); }
+}
+
+.m-meter {
+  position: absolute;
+  left: 14px; right: 14px; bottom: 7px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rule-2);
+  overflow: hidden;
+}
+.m-meter::after {
+  content: '';
+  display: block;
+  height: 100%;
+  background: var(--line);
+  transform: scaleX(var(--p));
+  transform-origin: left;
+}
+
+.matrix-note {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  color: var(--ink-3);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.swatch {
+  margin-top: 2px;
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  background: var(--yellow);
+  border: 1px solid rgba(20, 26, 36, 0.2);
+  flex: none;
+}
+
+/* ── Results ──────────────────────────── */
+
+.results[hidden] { display: none; }
+.results { scroll-margin-top: 16px; }
+
+.results-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 12px;
+}
+.results-tools .grow { flex: 1; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px 7px 12px;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: var(--ink);
+  color: var(--page);
+  font-weight: 650;
+  font-size: 0.9375rem;
+}
+.chip:hover { background: var(--chip-hover); }
+.chip[hidden] { display: none; }
+
+.sort-label { font-size: 0.875rem; font-weight: 650; color: var(--ink-2); }
+
+.result-list {
+  list-style: none;
+  padding: 0;
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sign);
+  overflow: hidden;
+}
+
+.flight + .flight { border-top: 1px solid var(--rule-2); }
+
+.flight-main {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.75rem minmax(12rem, 1.3fr) minmax(9rem, 1fr) minmax(6.5rem, 0.7fr) minmax(5.5rem, auto) 20px;
+  grid-template-areas: "rank route when dur price chev";
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  background: none;
+  border: 0;
+  text-align: left;
+  transition: background 0.15s;
+}
+.flight-main:hover { background: var(--page-hover); }
+.flight-main:focus-visible { outline-offset: -3px; }
+.flight-main[aria-expanded="true"] { background: var(--page-hover); }
+
+.f-rank { grid-area: rank; font-size: 0.875rem; color: var(--ink-3); }
+.f-route { grid-area: route; display: grid; gap: 8px; min-width: 0; }
+.f-when { grid-area: when; display: grid; gap: 8px; min-width: 0; }
+.f-dur { grid-area: dur; display: grid; gap: 8px; }
+.f-price { grid-area: price; text-align: right; display: grid; justify-items: end; gap: 2px; }
+.f-chev { grid-area: chev; color: var(--ink-3); transition: transform 0.2s var(--ease-out); }
+.flight-main[aria-expanded="true"] .f-chev { transform: rotate(180deg); }
+
+.leg-line {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(3rem, 1fr) 2.6rem;
+  align-items: center;
+  gap: 8px;
+}
+.leg-line .code {
+  font-stretch: 78%;
+  font-weight: 800;
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+}
+.leg-line .code:last-child { text-align: right; }
+
+.leg {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(var(--rule), var(--rule)) center / 100% 2px no-repeat;
+}
+.leg-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--w, 0) * 100%);
+  background: var(--line);
+  border-radius: 3px;
+}
+.leg-stop {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--p) * var(--w, 1) * 100%);
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--page);
+  border: 2.5px solid var(--line);
+  transform: translate(-50%, -50%);
+}
+
+.leg-tag {
+  font-size: 0.8125rem;
+  font-weight: 650;
+  color: var(--ink-3);
+  margin-bottom: -4px;
+}
+
+.f-line { display: grid; gap: 1px; }
+.f-times { font-weight: 700; font-size: 1.0625rem; white-space: nowrap; }
+.f-times sup { font-size: 0.7em; font-weight: 650; color: var(--ink-3); margin-left: 2px; }
+.f-sub {
+  font-size: 0.875rem;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.f-dur .f-main { font-weight: 650; }
+.is-direct { color: var(--ink); font-weight: 650; }
+
+.f-amount {
+  font-stretch: 78%;
+  font-weight: 850;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  padding: 2px 0;
+}
+.is-best .f-amount {
+  background: var(--yellow);
+  color: var(--on-yellow);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: -8px;
+}
+
+.flight-detail {
+  padding: 4px 16px 18px calc(1.75rem + 32px);
+  display: grid;
+  gap: 16px;
+  background: var(--page-hover);
+}
+.flight-detail:not([hidden]) { animation: detailIn 0.25s var(--ease-out); }
+
+@keyframes detailIn { from { opacity: 0; transform: translateY(-4px); } }
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(13rem, 40%), 1fr));
+  gap: 12px 24px;
+}
+.facts dt { font-size: 0.8125rem; font-weight: 650; color: var(--ink-3); }
+.facts dd { font-size: 0.9375rem; }
+.facts .muted { color: var(--ink-3); }
+
+.leg-block { display: grid; gap: 10px; }
+.leg-block + .leg-block { padding-top: 14px; border-top: 1px solid var(--rule-2); }
+.leg-block-title { font-weight: 750; }
+
+.ret-list { list-style: none; padding: 0; margin: 0; display: grid; }
+.ret-opt {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 4px 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
+.ret-opt:first-child { border-top: 1px solid var(--rule-2); }
+.ret-opt .f-times { font-size: 1rem; }
+.ret-name { font-size: 0.9375rem; min-width: 0; }
+.ret-same {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.ret-dur { font-size: 0.875rem; color: var(--ink-3); white-space: nowrap; }
+.ret-msg { font-size: 0.875rem; color: var(--ink-3); max-width: 70ch; text-wrap: pretty; }
+.ret-retry {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.book {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-book {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--r-ctl);
+  background: var(--blue);
+  color: var(--on-blue);
+  font-weight: 650;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-book:hover { background: var(--blue-3); }
+
+.btn-more {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sign);
+  font-weight: 650;
+  color: var(--ink-2);
+}
+.btn-more:hover { border-color: var(--ink-3); color: var(--ink); }
+.btn-more[hidden] { display: none; }
+
+.empty {
+  padding: 22px 20px;
+  display: grid;
+  gap: 8px;
+}
+.empty h3 { font-size: 1.125rem; font-weight: 750; }
+.empty ul { padding-left: 1.2em; color: var(--ink-2); display: grid; gap: 4px; }
+
+/* ── Responsive ───────────────────────── */
+
+@media (max-width: 1080px) {
+  .cover-inner { max-width: 720px; padding-block: 16px; }
+  .promise { flex-basis: 100%; text-align: left; }
+  .layout { grid-template-columns: minmax(0, 1fr); max-width: 720px; gap: 32px; }
+  .flight-main {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "route price"
+      "when dur";
+    gap: 10px 16px;
+  }
+  .f-rank, .f-chev { display: none; }
+  .f-dur { text-align: right; justify-items: end; }
+  .flight-detail { padding-left: 16px; }
+}
+
+@media (max-width: 560px) {
+  .cover-inner { min-height: 60px; padding: 12px; }
+  .brand { font-size: 1.625rem; gap: 10px; }
+  .mark { width: 32px; height: 32px; }
+  .mark .icon { width: 17px; height: 17px; }
+  .promise { display: none; }
+  .layout { padding: 16px 12px 56px; }
+  .sign, .page { padding: 16px 14px 14px; }
+  .sign-title { font-size: 1.625rem; }
+  .row-2 { grid-template-columns: 1fr; }
+  .seg span { padding: 9px 11px; }
+  .flex-rows { gap: 10px; }
+  .flex-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .flex-row .seg { flex-wrap: nowrap; }
+  .flex-row .seg span { padding-inline: 4px; }
+  .btn-go { font-size: 1.5rem; padding: 16px 18px; }
+  .sign-input--home { padding-block: 12px; }
+  .post-add-open, .tag-go, .tag-x, .btn-stop { min-height: 44px; }
+  .progress { flex-wrap: wrap; gap: 8px 14px; }
+  .progress-track { flex-basis: 100%; }
+  .progress-text { flex: 1; }
+  .panel-title { font-size: 1.625rem; }
+  .flight-main { padding: 14px 12px; }
+  .flight-detail { padding: 4px 12px 16px; }
+  .ret-opt { grid-template-columns: auto minmax(0, 1fr); }
+  .ret-dur { grid-column: 2; }
+  .matrix tbody th { min-width: 7.5rem; padding: 10px 12px; }
+  .m-cell { min-width: 5.5rem; padding: 10px 12px 14px; font-size: 1.0625rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-plane" viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></symbol>
+  <symbol id="i-sign-arrow" viewBox="0 0 24 24"><path d="M1.5 9.25h11.75V3.5L23 12l-9.75 8.5v-5.75H1.5z"/></symbol>
+  <symbol id="i-sign-home" viewBox="0 0 24 24"><path d="M12 2.5 1.5 11.25h3V21.5h5.75v-6.25h3.5v6.25h5.75V11.25h3z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+</svg>
+
+<header class="cover">
+  <div class="cover-inner">
+    <h1 class="brand">
+      <span class="mark" aria-hidden="true"><svg class="icon"><use href="#i-plane"/></svg></span>
+      Flight Finder
+    </h1>
+    <p class="promise">Doorzoekt alle luchthavens rond je huis en je bestemming tegelijk, en zet ze op prijs.</p>
+  </div>
+</header>
+
+<main class="layout">
+
+  <section class="planner" aria-label="Zoekopdracht">
+
+    <div class="recent" id="recent" hidden>
+      <h2 class="recent-title" id="recent-title">Recent gezocht</h2>
+      <ul class="recent-list" id="recent-list" aria-labelledby="recent-title"></ul>
+    </div>
+
+    <form id="search-form" class="planner" novalidate>
+
+      <fieldset class="sign">
+        <legend class="vh">Bestemming</legend>
+        <div class="sign-head">
+          <svg class="glyph" aria-hidden="true"><use href="#i-sign-arrow"/></svg>
+          <label class="sign-title" for="dest-input">Naar</label>
+        </div>
+        <div class="combo">
+          <input type="text" id="dest-input" class="sign-input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="dest-combo-list" placeholder="Stad of luchthaven, bijv. Barcelona" autocomplete="off" spellcheck="false" aria-describedby="dest-msg dest-hint">
+          <ul class="combo-list" id="dest-combo-list" role="listbox" aria-label="Bestemmingen" hidden></ul>
+        </div>
+        <p class="sign-msg" id="dest-msg" role="status"></p>
+        <ul class="signpost" id="dest-list" aria-label="Luchthavens bij je bestemming"></ul>
+        <p class="sign-hint" id="dest-hint" hidden>Afstand tot de stad. Tik een luchthaven aan om hem over te slaan.</p>
+        <div class="post-add" data-key="dest" hidden>
+          <button type="button" class="post-add-open"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg>Luchthaven toevoegen</button>
+          <div class="post-add-row" hidden>
+            <div class="combo">
+              <input type="text" class="post-add-input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="add-dest-list" placeholder="Typ een code of plaats, bijv. Girona" aria-label="Luchthaven toevoegen bij Naar" autocomplete="off" spellcheck="false">
+              <ul class="combo-list" id="add-dest-list" role="listbox" aria-label="Gevonden luchthavens" hidden></ul>
+            </div>
+            <button type="button" class="post-add-cancel" aria-label="Sluiten"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+          </div>
+          <p class="sign-msg post-add-msg" role="status"></p>
+        </div>
+        <div class="sign-foot">
+          <span id="max-dest-label">Luchthavens rond bestemming</span>
+          <div class="seg seg--sign" role="radiogroup" aria-labelledby="max-dest-label">
+            <label><input type="radio" name="max_dest" value="1" checked><span>1</span></label>
+            <label><input type="radio" name="max_dest" value="3"><span>3</span></label>
+            <label><input type="radio" name="max_dest" value="5"><span>5</span></label>
+            <label><input type="radio" name="max_dest" value="10"><span>10</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="page">
+        <legend class="page-title">Wanneer</legend>
+        <div class="row-2">
+          <div class="field">
+            <label class="field-label" for="depart-field">Heen</label>
+            <div class="date-field">
+              <svg class="icon cal" aria-hidden="true"><use href="#i-calendar"/></svg>
+              <input type="text" id="depart-field" class="control" readonly placeholder="Kies datum" autocomplete="off" aria-describedby="date-msg">
+            </div>
+            <input type="hidden" id="depart">
+          </div>
+          <div class="field">
+            <label class="field-label" for="return-field">Terug <small>(leeg = enkele reis)</small></label>
+            <div class="date-field">
+              <svg class="icon cal" aria-hidden="true"><use href="#i-calendar"/></svg>
+              <input type="text" id="return-field" class="control" readonly placeholder="Geen terugvlucht" autocomplete="off" aria-describedby="date-msg">
+              <button type="button" class="date-clear" id="return-clear" aria-label="Terugdatum wissen" hidden><svg class="icon icon-sm"><use href="#i-x"/></svg></button>
+            </div>
+            <input type="hidden" id="return-date">
+          </div>
+        </div>
+        <p class="field-msg" id="date-msg" role="status"></p>
+        <div class="field">
+          <span class="field-label" id="flex-label">Flexibel met data</span>
+          <div class="flex-rows">
+            <div class="flex-row">
+              <span class="flex-dir" id="flex-dep-label">Heen</span>
+              <div class="seg seg--fill" role="radiogroup" aria-labelledby="flex-label flex-dep-label">
+                <label><input type="radio" name="flex_dep" value="0" checked><span>Exact</span></label>
+                <label><input type="radio" name="flex_dep" value="1"><span>± 1 dag</span></label>
+                <label><input type="radio" name="flex_dep" value="2"><span>± 2 dagen</span></label>
+                <label><input type="radio" name="flex_dep" value="3"><span>± 3 dagen</span></label>
+              </div>
+            </div>
+            <div class="flex-row" id="flex-ret-row" hidden>
+              <span class="flex-dir" id="flex-ret-label">Terug</span>
+              <div class="seg seg--fill" role="radiogroup" aria-labelledby="flex-label flex-ret-label">
+                <label><input type="radio" name="flex_ret" value="0" checked><span>Exact</span></label>
+                <label><input type="radio" name="flex_ret" value="1"><span>± 1 dag</span></label>
+                <label><input type="radio" name="flex_ret" value="2"><span>± 2 dagen</span></label>
+                <label><input type="radio" name="flex_ret" value="3"><span>± 3 dagen</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <span class="field-label" id="adults-label">Reizigers</span>
+            <div class="stepper" role="group" aria-labelledby="adults-label">
+              <button type="button" id="adults-minus" aria-label="Eén reiziger minder"><svg class="icon"><use href="#i-minus"/></svg></button>
+              <output id="adults" aria-live="polite">1</output>
+              <button type="button" id="adults-plus" aria-label="Eén reiziger meer"><svg class="icon"><use href="#i-plus"/></svg></button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label" id="stops-label">Overstappen</span>
+            <div class="seg seg--fill" role="radiogroup" aria-labelledby="stops-label">
+              <label><input type="radio" name="max_stops" value="0" checked><span>Direct</span></label>
+              <label><input type="radio" name="max_stops" value="1"><span>Max 1</span></label>
+              <label><input type="radio" name="max_stops" value="all"><span>Alle</span></label>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="sign">
+        <legend class="vh">Vertrekpunt</legend>
+        <div class="sign-head">
+          <svg class="glyph" aria-hidden="true"><use href="#i-sign-home"/></svg>
+          <span class="sign-title">Vanaf</span>
+        </div>
+        <div class="home-row">
+          <label for="origin-input">Thuis</label>
+          <input type="text" id="origin-input" class="sign-input sign-input--home" placeholder="Postcode of plaats" autocomplete="postal-code" spellcheck="false" aria-describedby="home-place origin-msg origin-hint">
+        </div>
+        <p class="home-place" id="home-place" hidden></p>
+        <p class="sign-msg" id="origin-msg" role="status"></p>
+        <ul class="signpost" id="origin-list" aria-label="Vertrekluchthavens"></ul>
+        <p class="sign-hint" id="origin-hint" hidden>Afstand vanaf thuis. Tik een luchthaven aan om hem over te slaan.</p>
+        <div class="post-add" data-key="origin" hidden>
+          <button type="button" class="post-add-open"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg>Luchthaven toevoegen</button>
+          <div class="post-add-row" hidden>
+            <div class="combo">
+              <input type="text" class="post-add-input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="add-origin-list" placeholder="Typ een code of plaats, bijv. Rotterdam" aria-label="Luchthaven toevoegen bij Vanaf" autocomplete="off" spellcheck="false">
+              <ul class="combo-list" id="add-origin-list" role="listbox" aria-label="Gevonden luchthavens" hidden></ul>
+            </div>
+            <button type="button" class="post-add-cancel" aria-label="Sluiten"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+          </div>
+          <p class="sign-msg post-add-msg" role="status"></p>
+        </div>
+        <div class="sign-foot">
+          <span id="max-origin-label">Vertrekluchthavens</span>
+          <div class="seg seg--sign" role="radiogroup" aria-labelledby="max-origin-label">
+            <label><input type="radio" name="max_origin" value="3"><span>3</span></label>
+            <label><input type="radio" name="max_origin" value="5" checked><span>5</span></label>
+            <label><input type="radio" name="max_origin" value="8"><span>8</span></label>
+            <label><input type="radio" name="max_origin" value="10"><span>10</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="sign" id="return-sign" hidden>
+        <legend class="vh">Terugvlucht</legend>
+        <div class="sign-head">
+          <svg class="glyph glyph--back" aria-hidden="true"><use href="#i-sign-arrow"/></svg>
+          <span class="sign-title">Terug</span>
+        </div>
+        <div class="seg seg--sign seg--fill" role="radiogroup" aria-label="Soort terugreis" aria-describedby="trip-hint">
+          <label><input type="radio" name="combi" value="false" checked><span>Retourticket</span></label>
+          <label><input type="radio" name="combi" value="true"><span>Zelf combineren</span></label>
+        </div>
+        <p class="sign-hint" id="trip-hint"></p>
+
+        <div class="ret-custom" id="ret-custom" hidden>
+          <div class="ret-part">
+            <div class="ret-head">
+              <h3 class="sign-sub" id="ret-from-label">Terug vanaf</h3>
+              <button type="button" class="sign-link" id="ret-from-reset" hidden>Zelfde als bij Naar</button>
+            </div>
+            <ul class="signpost" id="ret-from-list" aria-labelledby="ret-from-label"></ul>
+            <div class="post-add" data-key="from" hidden>
+              <button type="button" class="post-add-open"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg>Luchthaven toevoegen</button>
+              <div class="post-add-row" hidden>
+                <div class="combo">
+                  <input type="text" class="post-add-input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="add-from-list" placeholder="Typ een code of plaats, bijv. Girona" aria-label="Luchthaven toevoegen bij Terug vanaf" autocomplete="off" spellcheck="false">
+                  <ul class="combo-list" id="add-from-list" role="listbox" aria-label="Gevonden luchthavens" hidden></ul>
+                </div>
+                <button type="button" class="post-add-cancel" aria-label="Sluiten"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+              </div>
+              <p class="sign-msg post-add-msg" role="status"></p>
+            </div>
+          </div>
+
+          <div class="ret-part">
+            <div class="ret-head">
+              <h3 class="sign-sub" id="ret-to-label">Landen op</h3>
+              <button type="button" class="sign-link" id="ret-to-reset" hidden>Zelfde als bij Vanaf</button>
+            </div>
+            <div class="seg seg--sign seg--fill" role="radiogroup" aria-labelledby="ret-to-label">
+              <label><input type="radio" name="ret_home" value="same" checked><span>Waar ik vertrok</span></label>
+              <label><input type="radio" name="ret_home" value="choose"><span>Kies zelf</span></label>
+            </div>
+            <p class="sign-hint" id="ret-home-hint">Je landt op dezelfde luchthaven als waar je heen vertrok. Handig als je auto daar staat.</p>
+            <div id="ret-to-choose" hidden>
+              <ul class="signpost" id="ret-to-list" aria-labelledby="ret-to-label"></ul>
+              <div class="post-add" data-key="to" hidden>
+                <button type="button" class="post-add-open"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg>Luchthaven toevoegen</button>
+                <div class="post-add-row" hidden>
+                  <div class="combo">
+                    <input type="text" class="post-add-input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="add-to-list" placeholder="Typ een code of plaats, bijv. Rotterdam" aria-label="Luchthaven toevoegen bij Landen op" autocomplete="off" spellcheck="false">
+                    <ul class="combo-list" id="add-to-list" role="listbox" aria-label="Gevonden luchthavens" hidden></ul>
+                  </div>
+                  <button type="button" class="post-add-cancel" aria-label="Sluiten"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+                </div>
+                <p class="sign-msg post-add-msg" role="status"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <details class="more" id="more">
+        <summary>
+          <span class="more-title">Meer opties</span>
+          <span class="more-sum" id="more-sum">Economy</span>
+          <svg class="icon chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+        </summary>
+        <div class="more-body">
+          <label class="field">
+            <span class="field-label">Klasse</span>
+            <select id="seat" class="control">
+              <option value="economy" selected>Economy</option>
+              <option value="premium-economy">Premium economy</option>
+              <option value="business">Business</option>
+              <option value="first">First</option>
+            </select>
+          </label>
+        </div>
+      </details>
+
+      <div class="go">
+        <button type="submit" class="btn-go" id="search-btn">
+          <span id="search-label">Zoek vluchten</span>
+          <svg class="glyph" aria-hidden="true"><use href="#i-sign-arrow"/></svg>
+        </button>
+        <p class="go-meta" id="go-meta" aria-live="polite"></p>
+      </div>
+
+    </form>
+  </section>
+
+  <div class="output">
+    <section class="board" id="board" aria-labelledby="board-title">
+      <div class="panel-head">
+        <h2 class="panel-title" id="board-title">Prijzentabel</h2>
+      </div>
+      <p class="status" id="status"></p>
+      <div class="alert" id="alert" role="alert" hidden></div>
+      <div class="stale" id="stale" hidden>
+        <p>Je hebt de zoekopdracht aangepast. Deze prijzen horen nog bij <b id="stale-label"></b>.</p>
+        <button type="submit" form="search-form" class="btn-again">Opnieuw zoeken</button>
+      </div>
+      <div class="progress" id="progress" hidden>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="progress-text" id="progress-text"></span>
+        <button type="button" class="btn-stop" id="stop-btn">Stoppen</button>
+      </div>
+      <div class="matrix-wrap">
+        <table class="matrix" id="matrix"></table>
+      </div>
+      <p class="matrix-note" id="matrix-note" hidden><span class="swatch" aria-hidden="true"></span> Goedkoopste route. Klik op een prijs om alleen die route hieronder te zien.</p>
+    </section>
+
+    <section class="results" id="results" aria-labelledby="results-title" hidden>
+      <div class="panel-head">
+        <h2 class="panel-title" id="results-title">Vluchten</h2>
+        <p class="status" id="results-count"></p>
+      </div>
+      <div class="results-tools">
+        <button type="button" class="chip" id="filter-chip" hidden></button>
+        <span class="grow"></span>
+        <span class="sort-label" id="sort-label">Sorteer op</span>
+        <div class="seg" role="radiogroup" aria-labelledby="sort-label" id="sort">
+          <label><input type="radio" name="sort" value="price" checked><span>Prijs</span></label>
+          <label><input type="radio" name="sort" value="time"><span>Vertrek</span></label>
+          <label><input type="radio" name="sort" value="duration"><span>Reisduur</span></label>
+        </div>
+      </div>
+      <ol class="result-list" id="result-list"></ol>
+      <button type="button" class="btn-more" id="more-results" hidden></button>
+    </section>
+  </div>
+
+  <p class="vh" id="announcer" aria-live="polite"></p>
+</main>
+
+<script>
+const HOME_DEFAULT = '7991AW';
+const HOME_KEY = 'flight-finder-home';
+const HISTORY_KEY = 'flight-finder-history';
+const HISTORY_MAX = 6;
+const LIST_STEP = 25;
+const MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+const DAYS = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+const EN_MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+const SEAT_LABELS = { economy: 'Economy', 'premium-economy': 'Premium economy', business: 'Business', first: 'First' };
+
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const icon = (name, cls = 'icon') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+const el = {
+  form: $('#search-form'),
+  destInput: $('#dest-input'),
+  originInput: $('#origin-input'),
+  depart: $('#depart'),
+  ret: $('#return-date'),
+  departField: $('#depart-field'),
+  retField: $('#return-field'),
+  retClear: $('#return-clear'),
+  dateMsg: $('#date-msg'),
+  adults: $('#adults'),
+  adultsMinus: $('#adults-minus'),
+  adultsPlus: $('#adults-plus'),
+  seat: $('#seat'),
+  moreSum: $('#more-sum'),
+  searchBtn: $('#search-btn'),
+  searchLabel: $('#search-label'),
+  goMeta: $('#go-meta'),
+  recent: $('#recent'),
+  recentList: $('#recent-list'),
+  board: $('#board'),
+  status: $('#status'),
+  alert: $('#alert'),
+  progress: $('#progress'),
+  progressFill: $('#progress-fill'),
+  progressText: $('#progress-text'),
+  stopBtn: $('#stop-btn'),
+  stale: $('#stale'),
+  staleLabel: $('#stale-label'),
+  output: $('.output'),
+  homePlace: $('#home-place'),
+  matrix: $('#matrix'),
+  matrixNote: $('#matrix-note'),
+  results: $('#results'),
+  resultsCount: $('#results-count'),
+  resultList: $('#result-list'),
+  filterChip: $('#filter-chip'),
+  moreResults: $('#more-results'),
+  announcer: $('#announcer'),
+};
+
+const groups = {
+  dest: { input: el.destInput, list: $('#dest-list'), msg: $('#dest-msg'), hint: $('#dest-hint'), airports: {}, extra: {}, extraFor: '', off: new Set(), loading: false, dirty: false, timer: null, ctrl: null, pending: null, pick: null },
+  origin: { input: el.originInput, list: $('#origin-list'), msg: $('#origin-msg'), hint: $('#origin-hint'), airports: {}, extra: {}, extraFor: '', off: new Set(), loading: false, dirty: false, timer: null, ctrl: null, pending: null },
+};
+
+// Return lists draw from the same airport pools. While linked they mirror the outbound selection;
+// the first toggle copies that selection so both can differ.
+const returns = {
+  from: { pool: 'dest', list: $('#ret-from-list'), reset: $('#ret-from-reset'), off: new Set(), linked: true },
+  to: { pool: 'origin', list: $('#ret-to-list'), reset: $('#ret-to-reset'), off: new Set(), linked: true },
+};
+
+let search = null;
+let view = { sort: 'price', filter: null, limit: LIST_STEP };
+const expanded = new Set();
+let eventSource = null;
+let renderQueued = false;
+// While a pointer is down on the live table or list, re-rendering would swap the element under it and lose the click.
+let renderHeld = false;
+let submitting = false;
+const wide = window.matchMedia('(min-width: 1081px)');
+
+// ── Small helpers ─────────────────────────
+
+const radio = name => $(`input[name="${name}"]:checked`)?.value;
+
+function setRadio(name, value) {
+  const inputs = $$(`input[name="${name}"]`);
+  const exact = inputs.find(i => i.value === String(value));
+  if (exact) { exact.checked = true; return; }
+  const nums = inputs.filter(i => !isNaN(+i.value));
+  const pick = nums.find(i => +i.value >= +value) || nums[nums.length - 1];
+  if (pick) pick.checked = true;
+}
+
+const poolOf = key => groups[key] || groups[returns[key].pool];
+const offOf = key => groups[key] ? groups[key].off : returns[key].linked ? groups[returns[key].pool].off : returns[key].off;
+const active = key => Object.keys(poolOf(key).airports).filter(c => !offOf(key).has(c));
+const sameHome = () => radio('ret_home') === 'same';
+const cellKey = (o, d) => `${o}>${d}`;
+const isCombi = () => radio('combi') === 'true' && !!el.ret.value;
+
+function isoToday() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function addDays(iso, n) {
+  const d = new Date(`${iso}T12:00:00`);
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(`${iso}T12:00:00`);
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+
+function parseAirport(info) {
+  const m = /^(.*?)\s*\((\d+)\s*km\)$/.exec(info || '');
+  return m ? { city: m[1], km: +m[2] } : { city: info || '', km: null };
+}
+
+function airportList(key, codes) {
+  return codes.map(code => ({ code, ...parseAirport(poolOf(key).airports[code]) }));
+}
+
+function money(n, raw) {
+  if (n == null) return raw || '?';
+  const sym = (typeof raw === 'string' && raw.replace(/[\d.,\s\u00a0]/g, '')) || search?.currency || '€';
+  if (search && !search.currency && typeof raw === 'string' && /\d/.test(raw)) search.currency = sym;
+  return `${sym}${Math.round(n).toLocaleString('nl-NL')}`;
+}
+
+function parseWhen(s, refIso) {
+  const m = /(\d{1,2}):(\d{2})\s*([AP]M)(?:\s+on\s+\w+,\s+([A-Za-z]{3})\w*\s+(\d{1,2}))?/i.exec(s || '');
+  if (!m) return null;
+  let h = +m[1] % 12;
+  if (m[3].toUpperCase() === 'PM') h += 12;
+  let date = null;
+  if (m[4] && refIso) {
+    const ref = new Date(`${refIso}T12:00:00`);
+    const month = EN_MONTHS[m[4].toLowerCase()];
+    let year = ref.getFullYear();
+    if (month < ref.getMonth() - 6) year += 1;
+    date = new Date(year, month, +m[5], h, +m[2]);
+  }
+  return { h, min: +m[2], date };
+}
+
+const hm = t => t ? `${String(t.h).padStart(2, '0')}:${String(t.min).padStart(2, '0')}` : '';
+const dayLabel = t => t?.date ? `${DAYS[t.date.getDay()]} ${t.date.getDate()} ${MONTHS[t.date.getMonth()]}` : '';
+
+function dayShift(dep, arr) {
+  if (!dep?.date || !arr?.date) return 0;
+  return Math.round((new Date(arr.date).setHours(0, 0, 0, 0) - new Date(dep.date).setHours(0, 0, 0, 0)) / 86400000);
+}
+
+function timesLabel(f, ref) {
+  const dep = parseWhen(f.departure, ref);
+  const arr = parseWhen(f.arrival, ref);
+  if (!dep) return esc(f.departure && f.departure !== '?' ? f.departure : 'Tijd onbekend');
+  const shift = dayShift(dep, arr);
+  return `${hm(dep)}${arr ? ` – ${hm(arr)}` : ''}${shift > 0 ? `<sup>+${shift}</sup>` : ''}`;
+}
+
+function parseDuration(s) {
+  if (!s) return null;
+  const h = /(\d+)\s*h/i.exec(s);
+  const m = /(\d+)\s*m/i.exec(s);
+  if (!h && !m) return null;
+  return (h ? +h[1] * 60 : 0) + (m ? +m[1] : 0);
+}
+
+function fmtDuration(mins, raw) {
+  if (mins == null) return raw && raw !== '?' ? esc(raw) : 'Duur onbekend';
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return h ? `${h}u${m ? ` ${m}m` : ''}` : `${m}m`;
+}
+
+function stopsCount(stops) {
+  if (stops === 0 || stops === '0' || String(stops).toLowerCase() === 'nonstop') return 0;
+  const n = parseInt(stops, 10);
+  return isNaN(n) ? null : n;
+}
+
+function stopsLabel(stops) {
+  const n = stopsCount(stops);
+  if (n === 0) return 'Direct';
+  if (n == null) return 'Overstappen onbekend';
+  return n === 1 ? '1 overstap' : `${n} overstappen`;
+}
+
+function announce(text) {
+  el.announcer.textContent = '';
+  requestAnimationFrame(() => { el.announcer.textContent = text; });
+}
+
+// ── Airport lookup ────────────────────────
+
+function setMsg(kind, text) {
+  const g = groups[kind];
+  g.msg.innerHTML = text ? `${icon('alert')}<span>${esc(text)}</span>` : '';
+}
+
+function setHomePlace(label) {
+  el.homePlace.hidden = !label;
+  el.homePlace.innerHTML = label ? `${icon('pin', 'icon icon-sm')}<span>${esc(label)}</span>` : '';
+}
+
+function scheduleLookup(kind, delay = 350) {
+  const g = groups[kind];
+  clearTimeout(g.timer);
+  g.dirty = true;
+  g.timer = setTimeout(() => { g.pending = lookup(kind); }, delay);
+}
+
+async function lookup(kind) {
+  const g = groups[kind];
+  clearTimeout(g.timer);
+  g.dirty = false;
+  g.ctrl?.abort();
+  const q = g.input.value.trim();
+
+  if (kind === 'dest' && q.length < 2) {
+    g.airports = {};
+    g.loading = false;
+    setMsg(kind, '');
+    renderPosts(kind);
+    update();
+    return;
+  }
+
+  const ctrl = g.ctrl = new AbortController();
+  g.loading = true;
+  renderPosts(kind);
+
+  const destQuery = g.pick?.label === q ? g.pick.code : q;
+  const url = kind === 'dest'
+    ? `/airports?q=${encodeURIComponent(destQuery)}&max_dest=${radio('max_dest')}`
+    : `/origins?home=${encodeURIComponent(q || HOME_DEFAULT)}&max_origin=${radio('max_origin')}`;
+
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    const data = await res.json();
+    let airports = data.airports || {};
+    const codes = Object.keys(airports);
+    const unresolved = kind === 'origin' && codes.length === 1 && airports[codes[0]] === codes[0] && codes[0] === (q || HOME_DEFAULT);
+    if (unresolved) airports = {};
+    if (g.extraFor !== q.toLowerCase()) g.extra = {};
+    g.airports = { ...airports, ...g.extra };
+
+    if (kind === 'dest' && !codes.length) {
+      setMsg(kind, `Geen luchthavens gevonden bij “${q}”. Probeer een grotere stad in de buurt of een luchthavencode zoals BCN.`);
+    } else if (unresolved) {
+      setMsg(kind, `We vinden “${q}” niet. Probeer een postcode, plaatsnaam of luchthavencode.`);
+    } else {
+      setMsg(kind, '');
+      if (kind === 'origin') localStorage.setItem(HOME_KEY, q || HOME_DEFAULT);
+    }
+    if (kind === 'origin') setHomePlace(unresolved || data.label?.toLowerCase() === (q || HOME_DEFAULT).toLowerCase() ? '' : data.label);
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    g.airports = {};
+    if (kind === 'origin') setHomePlace('');
+    setMsg(kind, 'Luchthavens ophalen lukte niet. Controleer je verbinding en probeer het opnieuw.');
+  }
+
+  if (g.ctrl === ctrl) {
+    g.ctrl = null;
+    g.loading = false;
+  }
+  g.off = new Set([...g.off].filter(c => c in g.airports));
+  for (const r of Object.values(returns)) {
+    if (r.pool === kind) r.off = new Set([...r.off].filter(c => c in g.airports));
+  }
+  renderPosts(kind);
+  update();
+}
+
+function renderPosts(key) {
+  const g = poolOf(key);
+  const list = groups[key] ? g.list : returns[key].list;
+  const off = offOf(key);
+  const entries = Object.entries(g.airports);
+  list.setAttribute('aria-busy', String(g.loading));
+  $(`.post-add[data-key="${key}"]`).hidden = key === 'dest' && !entries.length;
+
+  if (groups[key]) {
+    for (const r of Object.keys(returns)) if (returns[r].pool === key) renderPosts(r);
+  } else {
+    returns[key].reset.hidden = returns[key].linked;
+  }
+
+  if (g.loading && !entries.length) {
+    list.innerHTML = '<li class="post-skel"></li><li class="post-skel"></li>';
+    if (groups[key]) g.hint.hidden = true;
+    return;
+  }
+
+  list.innerHTML = entries.map(([code, info]) => {
+    const { city, km } = parseAirport(info);
+    const on = !off.has(code);
+    return `<li><button type="button" class="post" data-code="${esc(code)}" aria-pressed="${on}">
+      <span class="post-code">${esc(code)}</span>
+      <span class="post-city">${esc(city)}</span>
+      <span class="post-km">${km != null ? `${km} km` : ''}</span>
+      <span class="post-check">${icon('check')}</span>
+    </button></li>`;
+  }).join('');
+  if (groups[key]) g.hint.hidden = entries.length < 2;
+}
+
+function unlink(key) {
+  const r = returns[key];
+  if (!r.linked) return;
+  r.off = new Set(groups[r.pool].off);
+  r.linked = false;
+  r.reset.hidden = false;
+}
+
+function togglePost(key, btn) {
+  if (returns[key]) unlink(key);
+  const off = offOf(key);
+  const code = btn.dataset.code;
+  off.has(code) ? off.delete(code) : off.add(code);
+  btn.setAttribute('aria-pressed', String(!off.has(code)));
+  if (groups[key]) {
+    setMsg(key, '');
+    for (const r of Object.keys(returns)) if (returns[r].pool === key && returns[r].linked) renderPosts(r);
+  }
+  update();
+}
+
+el.originInput.addEventListener('input', () => scheduleLookup('origin'));
+// The destination resolves when a suggestion is chosen, on Enter, or when the field is left with typed text.
+el.destInput.addEventListener('input', () => {
+  groups.dest.dirty = true;
+  groups.dest.pick = null;
+  update();
+});
+el.destInput.addEventListener('change', () => { if (groups.dest.dirty) lookup('dest'); });
+
+for (const key of ['dest', 'origin', 'from', 'to']) {
+  const list = groups[key] ? groups[key].list : returns[key].list;
+  list.addEventListener('click', e => {
+    const btn = e.target.closest('.post');
+    if (btn) togglePost(key, btn);
+  });
+}
+
+for (const key of Object.keys(returns)) {
+  returns[key].reset.addEventListener('click', () => {
+    returns[key].linked = true;
+    returns[key].off.clear();
+    renderPosts(key);
+    update();
+    returns[key].list.querySelector('.post')?.focus();
+  });
+}
+
+// ── Add an airport by code or city ────────
+
+function addAirport(key, code, label) {
+  const g = poolOf(key);
+  const isNew = !(code in g.airports);
+  const query = g.input.value.trim().toLowerCase();
+  if (isNew) {
+    if (g.extraFor !== query) g.extra = {};
+    g.extraFor = query;
+    g.extra[code] = label;
+    g.airports = { ...g.airports, [code]: label };
+  }
+
+  if (groups[key]) {
+    g.off.delete(code);
+    for (const r of Object.values(returns)) if (r.pool === key && !r.linked && isNew) r.off.add(code);
+  } else {
+    unlink(key);
+    returns[key].off.delete(code);
+    if (isNew) g.off.add(code);
+  }
+
+  renderPosts(groups[key] ? key : returns[key].pool);
+  update();
+}
+
+const regionNames = new Intl.DisplayNames(['nl'], { type: 'region' });
+const countryName = code => {
+  try { return code ? regionNames.of(code) : ''; } catch { return code; }
+};
+
+// One airport combobox, shared by the destination field and every "Luchthaven toevoegen" row.
+function airportCombo({ input, listbox, refOf, stateOf = () => '', withPlace = false, onChoose, onEnter, onEscape, onError }) {
+  let results = [];
+  let place = null;
+  let activeIdx = -1;
+  let timer = null;
+  let ctrl = null;
+  const options = () => (place && withPlace ? [{ place }, ...results] : results);
+
+  const hide = () => {
+    listbox.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    input.removeAttribute('aria-activedescendant');
+  };
+
+  const reset = () => {
+    clearTimeout(timer);
+    ctrl?.abort();
+    hide();
+    results = [];
+    place = null;
+  };
+
+  const setActive = idx => {
+    activeIdx = idx;
+    for (const opt of listbox.querySelectorAll('.combo-opt')) opt.setAttribute('aria-selected', String(+opt.dataset.idx === idx));
+    const opt = listbox.querySelector(`[data-idx="${idx}"]`);
+    if (!opt) {
+      input.removeAttribute('aria-activedescendant');
+      return;
+    }
+    input.setAttribute('aria-activedescendant', opt.id);
+    opt.scrollIntoView({ block: 'nearest' });
+  };
+
+  const optionHtml = (a, i) => {
+    const id = `${listbox.id}-opt-${i}`;
+    if (a.place) {
+      return `<li class="combo-opt combo-opt--place" role="option" id="${id}" data-idx="${i}" aria-selected="false">
+        <span class="opt-code">${icon('pin')}</span>
+        <span class="opt-main"><span class="opt-city">Rond ${esc(a.place)}</span><span class="opt-name">Luchthavens in de buurt van deze plaats</span></span>
+        <span class="opt-side"></span>
+      </li>`;
+    }
+    const state = stateOf(a.code);
+    // Country first: on a phone the long airport name is cut off, and the country tells two Barcelonas apart.
+    const detail = [countryName(a.country), a.name].filter(Boolean).join(' · ');
+    return `<li class="combo-opt" role="option" id="${id}" data-idx="${i}" aria-selected="false">
+      <span class="opt-code">${esc(a.code)}</span>
+      <span class="opt-main"><span class="opt-city">${esc(a.city)}</span><span class="opt-name">${esc(detail)}</span></span>
+      <span class="opt-side">${a.km != null ? `<span class="opt-km">${a.km.toLocaleString('nl-NL')} km</span>` : ''}${state ? `<span class="opt-state">${state}</span>` : ''}</span>
+    </li>`;
+  };
+
+  const render = () => {
+    const opts = options();
+    listbox.innerHTML = opts.length
+      ? opts.map(optionHtml).join('')
+      : `<li class="combo-note" role="presentation">Geen luchthaven gevonden. Probeer een code (RTM) of een plaatsnaam.</li>`;
+    listbox.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+    setActive(opts.length ? Math.max(0, Math.min(activeIdx, opts.length - 1)) : -1);
+  };
+
+  const fetchResults = async () => {
+    const q = input.value.trim();
+    ctrl?.abort();
+    if (q.length < 2) {
+      results = [];
+      place = null;
+      hide();
+      return;
+    }
+    const current = ctrl = new AbortController();
+    try {
+      const res = await fetch(`/airport-search?q=${encodeURIComponent(q)}&ref=${encodeURIComponent(refOf())}`, { signal: current.signal });
+      const data = await res.json();
+      results = data.airports || [];
+      place = data.place || null;
+      activeIdx = 0;
+      onError('');
+      if (document.activeElement === input) render();
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      hide();
+      onError('Zoeken lukte niet. Controleer je verbinding en probeer het opnieuw.');
+    }
+  };
+
+  const choose = (idx, viaKeyboard) => {
+    const a = options()[idx];
+    if (!a) return;
+    reset();
+    onChoose(a, viaKeyboard);
+  };
+
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(fetchResults, 150);
+  });
+  input.addEventListener('focus', () => { if (options().length && input.value.trim().length >= 2) render(); });
+  input.addEventListener('blur', hide);
+
+  input.addEventListener('keydown', e => {
+    const n = options().length;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!n) return;
+      if (listbox.hidden) return render();
+      setActive(e.key === 'ArrowDown' ? (activeIdx + 1) % n : (activeIdx - 1 + n) % n);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!listbox.hidden && activeIdx >= 0) choose(activeIdx, true);
+      else onEnter?.();
+    } else if (e.key === 'Escape') {
+      if (!listbox.hidden) {
+        e.preventDefault();
+        hide();
+      } else if (onEscape) {
+        e.preventDefault();
+        onEscape();
+      }
+    }
+  });
+
+  listbox.addEventListener('mousedown', e => e.preventDefault());
+  listbox.addEventListener('click', e => {
+    const opt = e.target.closest('.combo-opt');
+    if (opt) choose(+opt.dataset.idx, false);
+  });
+
+  return { reset };
+}
+
+const homeRef = () => el.originInput.value.trim() || HOME_DEFAULT;
+
+for (const box of $$('.post-add')) {
+  const key = box.dataset.key;
+  const open = $('.post-add-open', box);
+  const row = $('.post-add-row', box);
+  const input = $('.post-add-input', box);
+  const msg = $('.post-add-msg', box);
+  const setAddMsg = text => { msg.innerHTML = text ? `${icon('alert')}<span>${esc(text)}</span>` : ''; };
+
+  const close = () => {
+    combo.reset();
+    input.value = '';
+    setAddMsg('');
+    row.hidden = true;
+    open.hidden = false;
+    open.focus();
+  };
+
+  const combo = airportCombo({
+    input,
+    listbox: $('.combo-list', box),
+    refOf: () => ((returns[key] ? returns[key].pool : key) === 'dest' ? el.destInput.value.trim() : homeRef()),
+    stateOf: code => !(code in poolOf(key).airports) ? '' : offOf(key).has(code) ? 'Staat uit · zet aan' : 'Staat al aan',
+    onChoose: a => {
+      addAirport(key, a.code, a.km ? `${a.city} (${a.km}km)` : a.city);
+      announce(`${a.code} ${a.city} toegevoegd.`);
+      close();
+    },
+    onEscape: close,
+    onError: setAddMsg,
+  });
+
+  open.addEventListener('click', () => {
+    open.hidden = true;
+    row.hidden = false;
+    input.focus();
+  });
+  $('.post-add-cancel', box).addEventListener('click', close);
+}
+
+const destNext = () => {
+  if (!el.depart.value) el.departField.focus();
+  else el.form.requestSubmit();
+};
+
+airportCombo({
+  input: el.destInput,
+  listbox: $('#dest-combo-list'),
+  refOf: homeRef,
+  withPlace: true,
+  onChoose: (a, viaKeyboard) => {
+    el.destInput.value = a.place || a.city;
+    groups.dest.pick = a.place ? null : { label: a.city, code: a.code };
+    lookup('dest');
+    if (viaKeyboard) destNext();
+  },
+  onEnter: () => {
+    if (groups.dest.dirty) lookup('dest');
+    destNext();
+  },
+  onError: text => setMsg('dest', text),
+});
+
+$$('input[name="max_dest"]').forEach(r => r.addEventListener('change', () => { if (el.destInput.value.trim().length >= 2) lookup('dest'); }));
+$$('input[name="max_origin"]').forEach(r => r.addEventListener('change', () => lookup('origin')));
+
+// ── Dates, travellers, options ────────────
+
+function setAdults(n) {
+  const v = Math.min(4, Math.max(1, n));
+  el.adults.value = el.adults.textContent = String(v);
+  el.adultsMinus.disabled = v <= 1;
+  el.adultsPlus.disabled = v >= 4;
+}
+el.adultsMinus.addEventListener('click', () => { setAdults(+el.adults.textContent - 1); update(); });
+el.adultsPlus.addEventListener('click', () => { setAdults(+el.adults.textContent + 1); update(); });
+
+function checkDates(strict = false) {
+  const dep = el.depart.value, ret = el.ret.value;
+  let msg = '';
+  let bad = null;
+  if (strict && !dep) { msg = 'Kies een vertrekdatum.'; bad = el.departField; }
+  else if (dep && dep < isoToday()) { msg = 'De heendatum ligt in het verleden. Kies een nieuwe datum.'; bad = el.departField; }
+  else if (dep && ret && ret < dep) { msg = 'De terugdatum ligt vóór de heendatum.'; bad = el.retField; }
+  el.dateMsg.innerHTML = msg ? `${icon('alert')}<span>${msg}</span>` : '';
+  el.departField.setAttribute('aria-invalid', String(bad === el.departField));
+  el.retField.setAttribute('aria-invalid', String(bad === el.retField));
+  return bad;
+}
+
+const NL_LOCALE = {
+  days: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'],
+  daysShort: DAYS,
+  daysMin: DAYS,
+  months: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+  monthsShort: MONTHS,
+  today: 'Vandaag',
+  clear: 'Wissen',
+  dateFormat: 'dd-MM-yyyy',
+  timeFormat: 'HH:mm',
+  firstDay: 1,
+};
+
+const pad = n => String(n).padStart(2, '0');
+const toIso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const fromIso = iso => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+const longDate = d => `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}${d.getFullYear() === new Date().getFullYear() ? '' : ` ’${String(d.getFullYear()).slice(2)}`}`;
+
+function dayCell({ date, cellType }) {
+  if (cellType !== 'day') return;
+  const iso = toIso(date), dep = el.depart.value, ret = el.ret.value;
+  if (iso === dep) return { classes: '-departure-' };
+  if (iso === ret) return { classes: '-return-' };
+  if (dep && ret && iso > dep && iso < ret) return { classes: '-between-' };
+}
+
+const pickerBase = {
+  locale: NL_LOCALE,
+  autoClose: true,
+  toggleSelected: false,
+  keyboardNav: true,
+  isMobile: window.matchMedia('(max-width: 560px)').matches,
+  position: 'bottom left',
+  minDate: fromIso(isoToday()),
+  dateFormat: longDate,
+  navTitles: { days: 'MMMM <i>yyyy</i>' },
+  onRenderCell: dayCell,
+};
+
+let openReturnNext = false;
+
+const departPicker = new AirDatepicker(el.departField, {
+  ...pickerBase,
+  onSelect: ({ date }) => {
+    el.depart.value = date ? toIso(date) : '';
+    if (date) {
+      if (el.ret.value && el.ret.value < el.depart.value) setReturn(null);
+      returnPicker.update({ minDate: date, startDate: date });
+      if (!el.ret.value) returnPicker.setViewDate(date);
+      openReturnNext = !el.ret.value;
+    }
+    checkDates();
+    update();
+  },
+  onHide: done => {
+    if (!done || !openReturnNext) return;
+    openReturnNext = false;
+    el.retField.focus();
+  },
+});
+
+const returnPicker = new AirDatepicker(el.retField, {
+  ...pickerBase,
+  buttons: [{ content: 'Geen terugvlucht', onClick: dp => { setReturn(null); dp.hide(); checkDates(); update(); } }],
+  onSelect: ({ date }) => {
+    el.ret.value = date ? toIso(date) : '';
+    el.retClear.hidden = !date;
+    departPicker.update({});
+    checkDates();
+    update();
+  },
+});
+
+function setReturn(iso) {
+  el.ret.value = iso || '';
+  el.retClear.hidden = !iso;
+  if (iso) returnPicker.selectDate(fromIso(iso), { silent: true });
+  else returnPicker.clear({ silent: true });
+}
+
+function setDepart(iso) {
+  el.depart.value = iso || '';
+  if (iso && iso >= isoToday()) {
+    departPicker.selectDate(fromIso(iso), { silent: true });
+    returnPicker.update({ minDate: fromIso(iso), startDate: fromIso(iso) });
+  } else {
+    departPicker.clear({ silent: true });
+    if (iso) el.departField.value = longDate(fromIso(iso));
+  }
+}
+
+el.retClear.addEventListener('click', () => {
+  setReturn(null);
+  departPicker.update({});
+  checkDates();
+  update();
+  $('input[name="flex_dep"]:checked').focus();
+});
+$$('input[name="flex_dep"], input[name="flex_ret"], input[name="combi"], input[name="ret_home"], input[name="max_stops"]').forEach(r => r.addEventListener('change', update));
+el.seat.addEventListener('change', update);
+
+const flexDep = () => +radio('flex_dep');
+const flexRet = () => el.ret.value ? +radio('flex_ret') : 0;
+
+function flexDates(iso, f, earliest) {
+  const days = [];
+  for (let o = -f; o <= f; o++) if (addDays(iso, o) >= earliest) days.push(addDays(iso, o));
+  return days;
+}
+
+// Mirrors generate_date_shifts: every departure date pairs with every return date on or after it.
+function datePlan() {
+  const dep = el.depart.value;
+  const ret = el.ret.value;
+  if (!dep || (!flexDep() && !flexRet())) return { deps: 1, rets: ret ? 1 : 0, pairs: 1 };
+  const deps = flexDates(dep, flexDep(), isoToday());
+  if (!ret) return { deps: deps.length, rets: 0, pairs: deps.length };
+  const rets = flexDates(ret, flexRet(), deps[0] || dep);
+  const pairs = deps.reduce((n, d) => n + rets.filter(r => r >= d).length, 0);
+  return { deps: deps.length, rets: rets.length, pairs };
+}
+
+function plannedSearches() {
+  const O = active('origin').length;
+  const D = active('dest').length;
+  const dates = datePlan();
+  if (!isCombi()) return { O, D, dates, Rf: 0, Rt: 0, out: O * D * dates.pairs, back: 0, total: O * D * dates.pairs };
+  const Rf = active('from').length;
+  const Rt = sameHome() ? O : active('to').length;
+  const out = O * D * dates.deps;
+  const back = Rf * Rt * dates.rets;
+  return { O, D, dates, Rf, Rt, out, back, total: out + back };
+}
+
+function update() {
+  const combi = isCombi();
+  const plan = plannedSearches();
+  const { O, D, dates } = plan;
+
+  $('#return-sign').hidden = !el.ret.value;
+  $('#flex-ret-row').hidden = !el.ret.value;
+  if (!el.ret.value) setRadio('combi', 'false');
+  $('#ret-custom').hidden = !combi;
+  $('#ret-to-choose').hidden = sameHome();
+  $('#trip-hint').textContent = combi
+    ? 'Heen en terug als twee losse tickets. Kies hieronder waar je terug vertrekt en waar je landt.'
+    : 'Eén retourticket: terug vanaf de luchthaven waar je landde, naar de luchthaven waar je vertrok.';
+  $('#ret-home-hint').hidden = !sameHome();
+  el.moreSum.textContent = SEAT_LABELS[el.seat.value];
+
+  if (!el.destInput.value.trim()) {
+    el.goMeta.textContent = 'Vul een bestemming en een vertrekdatum in.';
+  } else if (!D) {
+    el.goMeta.textContent = groups.dest.loading || groups.dest.dirty ? 'Luchthavens zoeken…' : 'Zet minstens één bestemmingsluchthaven aan.';
+  } else if (!el.depart.value) {
+    el.goMeta.textContent = 'Kies nog een vertrekdatum.';
+  } else if (!O) {
+    el.goMeta.textContent = 'Zet minstens één vertrekluchthaven aan.';
+  } else if (combi && !plan.Rf) {
+    el.goMeta.textContent = 'Zet bij Terug minstens één luchthaven aan om vanaf te vertrekken.';
+  } else if (combi && !plan.Rt) {
+    el.goMeta.textContent = 'Zet bij Terug minstens één luchthaven aan om op te landen.';
+  } else if (combi) {
+    const spread = dates.deps > 1 || dates.rets > 1 ? `, over ${dates.deps} heen- en ${dates.rets} terugdag${dates.rets > 1 ? 'en' : ''}` : '';
+    el.goMeta.innerHTML = `<b>${plan.total}</b> zoekopdrachten: ${plan.out} heen + ${plan.back} terug${spread}`;
+  } else {
+    const parts = [`${O} vertrek`, `${D} bestemming${D > 1 ? 'en' : ''}`];
+    if (dates.pairs > 1) parts.push(el.ret.value ? `${dates.pairs} datumcombinaties` : `${dates.pairs} data`);
+    el.goMeta.innerHTML = `<b>${plan.total}</b> zoekopdracht${plan.total === 1 ? '' : 'en'}: ${parts.join(' × ')}`;
+  }
+
+  if (!search) renderBoard();
+  renderStale();
+}
+
+// ── Search ────────────────────────────────
+
+el.form.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (submitting || (search && !search.done)) return;
+  submitting = true;
+  try {
+    // Typed text may still need its airports; the button responds at once while they load.
+    if (['dest', 'origin'].some(k => groups[k].dirty || groups[k].loading)) setBusy(true, 'Luchthavens zoeken…');
+    for (const kind of ['dest', 'origin']) {
+      const g = groups[kind];
+      if (g.dirty) await lookup(kind);
+      else if (g.loading) await g.pending;
+    }
+
+    const firstBad = validate();
+    if (firstBad) {
+      setBusy(false);
+      firstBad.focus();
+      return;
+    }
+    startSearch();
+  } finally {
+    submitting = false;
+  }
+});
+
+// Enter in a date field picks the day in the calendar; it must not also submit the form.
+for (const field of [el.departField, el.retField]) {
+  field.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+}
+
+function validate() {
+  let first = null;
+  const flag = node => { first ||= node; };
+
+  if (!el.destInput.value.trim()) { setMsg('dest', 'Vul een bestemming in.'); flag(el.destInput); }
+  else if (!Object.keys(groups.dest.airports).length) flag(el.destInput);
+  else if (!active('dest').length) { setMsg('dest', 'Zet minstens één luchthaven aan.'); flag(groups.dest.list.querySelector('.post') || el.destInput); }
+
+  const badDate = checkDates(true);
+  if (badDate) flag(badDate);
+
+  if (!active('origin').length) {
+    if (Object.keys(groups.origin.airports).length) setMsg('origin', 'Zet minstens één vertrekluchthaven aan.');
+    flag(el.originInput);
+  }
+
+  if (isCombi()) {
+    if (!active('from').length) flag(returns.from.list.querySelector('.post') || $('#return-sign'));
+    else if (!sameHome() && !active('to').length) flag(returns.to.list.querySelector('.post') || $('#return-sign'));
+  }
+  return first;
+}
+
+function requestBody() {
+  const stops = radio('max_stops');
+  return {
+    destination: el.destInput.value.trim(),
+    depart: el.depart.value,
+    return_date: el.ret.value || null,
+    combi: isCombi(),
+    max_stops: stops === 'all' ? null : +stops,
+    adults: +el.adults.textContent,
+    seat: el.seat.value,
+    max_dest: +radio('max_dest'),
+    max_origin: +radio('max_origin'),
+    home: el.originInput.value.trim() || HOME_DEFAULT,
+    dest_codes: active('dest'),
+    origins: active('origin'),
+    return_from: isCombi() ? active('from') : null,
+    return_to: isCombi() && !sameHome() ? active('to') : null,
+    flex_depart: flexDep(),
+    flex_return: flexRet(),
+    extras: { dest: groups.dest.extra, origin: groups.origin.extra },
+    dest_pick: groups.dest.pick,
+  };
+}
+
+async function startSearch() {
+  const body = requestBody();
+  closeStream();
+
+  search = {
+    mode: body.combi ? 'combi' : 'standard',
+    depart: body.depart,
+    returnDate: body.return_date,
+    origins: airportList('origin', body.origins),
+    dests: airportList('dest', body.dest_codes),
+    places: Object.fromEntries([
+      ...Object.entries(groups.dest.airports).map(([c, info]) => [c, { ...parseAirport(info), home: false }]),
+      ...Object.entries(groups.origin.airports).map(([c, info]) => [c, { ...parseAirport(info), home: true }]),
+    ]),
+    shifts: body.combi ? datePlan().deps : datePlan().pairs,
+    cells: new Map(),
+    flights: [],
+    combos: [],
+    seen: new Set(),
+    searched: 0,
+    total: plannedSearches().total,
+    hits: 0,
+    started: performance.now(),
+    sig: searchSig(body),
+    label: `${body.destination}, ${fmtDate(body.depart)}${body.return_date ? ` – ${fmtDate(body.return_date)}` : ''}`,
+    done: false,
+    stopped: false,
+    error: null,
+    currency: null,
+    query: { adults: body.adults, seat: body.seat, max_stops: body.max_stops },
+  };
+  view = { sort: 'price', filter: null, limit: LIST_STEP };
+  setRadio('sort', 'price');
+  expanded.clear();
+  setBusy(true);
+  renderAll();
+  announce('Zoeken gestart.');
+
+  if (window.matchMedia('(max-width: 1080px)').matches) {
+    el.board.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  try {
+    const res = await fetch('/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) throw new Error(data.error || `Zoeken lukte niet: de server gaf een fout (${res.status}). Probeer het opnieuw.`);
+    saveHistory(body);
+    subscribe(data.task_id);
+  } catch (err) {
+    fail(err.message === 'Failed to fetch' ? 'De server is niet bereikbaar. Controleer of Flight Finder draait en probeer opnieuw.' : err.message);
+  }
+}
+
+function setBusy(busy, label = 'Bezig met zoeken…') {
+  el.searchBtn.disabled = busy;
+  el.searchBtn.setAttribute('aria-busy', String(busy));
+  el.searchLabel.textContent = busy ? label : 'Zoek vluchten';
+}
+
+// Closing the stream also stops the search on the server; the prices found so far stay.
+el.stopBtn.addEventListener('click', () => {
+  if (!search || search.done) return;
+  closeStream();
+  search.done = true;
+  search.stopped = true;
+  setBusy(false);
+  renderAll();
+  announce(`Gestopt na ${search.searched} van ${search.total} zoekopdrachten.`);
+  el.searchBtn.focus();
+});
+
+const searchSig = body => JSON.stringify({ ...body, extras: undefined, dest_pick: undefined });
+
+function renderStale() {
+  const stale = !!search?.done && !!(search.flights.length || search.combos.length) && searchSig(requestBody()) !== search.sig;
+  el.stale.hidden = !stale;
+  el.output.classList.toggle('is-stale', stale);
+  if (stale) el.staleLabel.textContent = search.label;
+}
+
+function etaLabel() {
+  const { searched, total, started } = search;
+  if (searched < 3 || searched >= total) return '';
+  const left = (performance.now() - started) / searched * (total - searched) / 1000;
+  if (left < 5) return ' · bijna klaar';
+  return left < 60 ? ` · nog ca. ${Math.ceil(left / 5) * 5} s` : ` · nog ca. ${Math.round(left / 60)} min`;
+}
+
+function closeStream() {
+  if (eventSource) eventSource.close();
+  eventSource = null;
+}
+
+function subscribe(taskId) {
+  eventSource = new EventSource(`/progress/${taskId}`);
+  eventSource.addEventListener('progress', e => onProgress(JSON.parse(e.data)));
+  eventSource.addEventListener('complete', e => {
+    closeStream();
+    onComplete(JSON.parse(e.data));
+  });
+  eventSource.addEventListener('error', e => {
+    if (!eventSource) return;
+    let msg = 'De verbinding met de server is verbroken. Start de zoekopdracht opnieuw.';
+    if (e.data) {
+      try { msg = JSON.parse(e.data).error || msg; } catch {}
+    }
+    closeStream();
+    fail(msg);
+  });
+}
+
+function cell(key) {
+  let c = search.cells.get(key);
+  if (!c) search.cells.set(key, c = { count: 0, best: null, fresh: false });
+  return c;
+}
+
+function bump(o, d, price) {
+  if (price == null) return;
+  const c = cell(cellKey(o, d));
+  if (c.best == null || price < c.best) {
+    c.best = price;
+    c.fresh = true;
+  }
+}
+
+const flightKey = f => `${f.origin}|${f.dest_out}|${f.departure}|${f.arrival}|${f.name}|${f.return_date}|${f.price}`;
+const comboKey = c => `${c.origin}|${c.dest_out}|${c.dest_return}|${c.return_to}|${c.outbound?.departure}|${c.return?.departure}|${c.total_price}`;
+const itemKey = it => search.mode === 'combi' ? comboKey(it) : flightKey(it);
+const itemPrice = it => search.mode === 'combi' ? it.total_price : it.price;
+
+function onProgress(d) {
+  if (!search || search.done || d.status !== 'searching') return;
+  search.total = d.total || search.total;
+  search.searched = d.searched;
+  search.hits = d.hits;
+
+  const m = /(?:(Heen|Terug):\s*)?([A-Z0-9]{3})\s*→\s*([A-Z0-9]{3})/.exec(d.current_route || '');
+  if (m && m[1] !== 'Terug') cell(cellKey(m[2], m[3])).count++;
+  for (const [key, price] of Object.entries(d.cell_best || {})) bump(...key.split('>'), price);
+
+  for (const f of d.new_flights || []) {
+    const key = flightKey(f);
+    if (search.seen.has(key)) continue;
+    search.seen.add(key);
+    search.flights.push(f);
+    bump(f.origin, f.dest_out, f.price);
+  }
+  if (d.new_combos?.length) {
+    search.combos = d.new_combos;
+    for (const c of d.new_combos) bump(c.origin, c.dest_out, c.total_price);
+  }
+  queueRender();
+}
+
+function onComplete(d) {
+  if (!search) return;
+  search.done = true;
+  search.searched = search.total;
+  search.hits = d.hits ?? search.hits;
+  if (d.mode === 'combi') {
+    search.combos = d.results || [];
+    for (const c of search.combos) bump(c.origin, c.dest_out, c.total_price);
+  } else {
+    // The live events already delivered every flight; the final list is a capped subset, so merge instead of replace.
+    for (const f of d.results || []) {
+      const key = flightKey(f);
+      if (!search.seen.has(key)) {
+        search.seen.add(key);
+        search.flights.push(f);
+      }
+      bump(f.origin, f.dest_out, f.price);
+    }
+  }
+  const top = listItems();
+  const first = top[0];
+  // On a wide screen the cheapest flight opens; on a phone it would push the other prices out of view.
+  if (first && wide.matches) expanded.add(itemKey(first));
+  // Fetch the return options of the cheapest rows now, so they are ready when a row opens.
+  if (search.mode === 'standard') top.slice(0, 3).filter(f => f.return_date).forEach(loadReturns);
+  setBusy(false);
+  renderAll();
+  const n = search.mode === 'combi' ? search.combos.length : search.flights.length;
+  announce(n ? `Klaar. Goedkoopste: ${money(itemPrice(first), first.price_raw)}.` : 'Klaar. Geen vluchten gevonden.');
+}
+
+function fail(message) {
+  if (!search) return;
+  search.done = true;
+  search.error = message;
+  setBusy(false);
+  renderAll();
+}
+
+// ── Rendering ─────────────────────────────
+
+function queueRender() {
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => {
+    if (renderHeld) return;
+    renderQueued = false;
+    renderAll();
+  });
+}
+
+for (const node of [el.matrix, el.resultList]) node.addEventListener('pointerdown', () => { renderHeld = true; });
+const releaseRender = () => {
+  if (!renderHeld) return;
+  // After the click has been handled.
+  setTimeout(() => {
+    renderHeld = false;
+    if (renderQueued) {
+      renderQueued = false;
+      queueRender();
+    }
+  });
+};
+document.addEventListener('pointerup', releaseRender);
+document.addEventListener('pointercancel', releaseRender);
+
+function renderAll() {
+  renderBoard();
+  renderResults();
+  renderStale();
+}
+
+// Skips identical markup, so live updates leave unchanged rows, hover and focus alone.
+const lastHtml = new WeakMap();
+const setHtml = (node, html) => {
+  if (lastHtml.get(node) === html) return false;
+  node.innerHTML = html;
+  lastHtml.set(node, html);
+  return true;
+};
+
+function bestPrice() {
+  let best = null;
+  for (const c of search?.cells.values() || []) if (c.best != null && (best == null || c.best < best)) best = c.best;
+  return best;
+}
+
+function bestRoute() {
+  let best = null;
+  for (const [key, c] of search.cells) if (c.best != null && (!best || c.best < best.price)) best = { key, price: c.best };
+  return best;
+}
+
+function renderBoard() {
+  const origins = search ? search.origins : airportList('origin', active('origin'));
+  const dests = search ? search.dests : airportList('dest', active('dest'));
+
+  // status
+  el.alert.hidden = !search?.error;
+  if (search?.error) el.alert.innerHTML = `${icon('alert')}<span>${esc(search.error)}</span>`;
+
+  if (!search) {
+    el.status.textContent = dests.length
+      ? 'Klaar om te zoeken. Per vertrekluchthaven (rij) en bestemming (kolom) komt hier de laagste prijs te staan.'
+      : 'Kies een bestemming. Per vertrekluchthaven (rij) en bestemming (kolom) komt hier de laagste prijs te staan.';
+  } else if (!search.done) {
+    const best = bestRoute();
+    const [bo, bd] = best ? best.key.split('>') : [];
+    el.status.innerHTML = best
+      ? `Goedkoopste tot nu toe: <b>${money(best.price)}</b> van ${esc(bo)} naar ${esc(bd)}.`
+      : 'De prijzen verschijnen per route zodra ze binnenkomen.';
+  } else if (search.stopped) {
+    el.status.innerHTML = `Gestopt na <b>${search.searched}</b> van ${search.total} zoekopdrachten. Dit zijn de prijzen tot dat moment.`;
+  } else if (!search.error) {
+    el.status.innerHTML = `Klaar: ${esc(search.label)}. <b>${search.total}</b> zoekopdracht${search.total === 1 ? '' : 'en'}, ${search.hits} met resultaat.`;
+  } else {
+    el.status.textContent = '';
+  }
+
+  el.progress.hidden = !search || search.done;
+  if (search && !search.done) {
+    const pct = search.total ? Math.min(100, (search.searched / search.total) * 100) : 0;
+    el.progressFill.style.setProperty('--p', (pct / 100).toFixed(3));
+    el.progress.toggleAttribute('data-idle', !search.searched);
+    el.progressText.textContent = `${search.searched} van ${search.total}${etaLabel()}`;
+  }
+
+  // table
+  const focusKey = document.activeElement?.closest?.('.m-cell')?.dataset.key;
+  const perCell = search ? search.shifts : 1;
+  const best = search ? bestPrice() : null;
+
+  const head = `<thead><tr><th scope="col" class="m-corner">Vanaf / naar</th>${dests.length
+    ? dests.map(d => `<th scope="col"><span class="m-code">${esc(d.code)}</span><span class="m-city">${esc(d.city)}</span></th>`).join('')
+    : '<th scope="col"><span class="m-code">?</span><span class="m-city">Bestemming</span></th>'}</tr></thead>`;
+
+  const rows = origins.length ? origins.map(o => {
+    const cells = (dests.length ? dests : [{ code: '?' }]).map(d => {
+      if (!search) return `<td><button type="button" class="m-cell" data-state="idle" disabled aria-label="${esc(o.code)} naar ${esc(d.code)}: nog niet gezocht"><span class="m-price">—</span></button></td>`;
+      const key = cellKey(o.code, d.code);
+      const c = search.cells.get(key) || { count: 0, best: null };
+      const finished = (search.done && !search.stopped) || (search.mode === 'standard' && c.count >= perCell);
+      const state = c.best != null ? (c.best === best ? 'best' : 'found') : finished ? 'none' : search.done ? 'idle' : c.count ? 'busy' : 'wait';
+      const label = c.best != null ? money(c.best) : finished ? 'geen' : search.done ? '—' : '···';
+      const desc = c.best != null ? `vanaf ${money(c.best)}` : finished ? 'geen vluchten' : search.done ? 'niet gezocht' : 'wordt gezocht';
+      const pressed = view.filter?.o === o.code && view.filter?.d === d.code;
+      const fresh = c.fresh && !reduceMotion.matches;
+      if (c.fresh) c.fresh = false;
+      const meter = search.done ? '' : `<span class="m-meter" style="--p:${Math.min(1, c.count / perCell).toFixed(3)}"></span>`;
+      return `<td><button type="button" class="m-cell${fresh ? ' is-new' : ''}" data-key="${esc(key)}" data-state="${state}" aria-pressed="${pressed}" ${c.best == null ? 'disabled' : ''} aria-label="${esc(o.code)} naar ${esc(d.code)}: ${desc}"><span class="m-price">${label}</span>${meter}</button></td>`;
+    }).join('');
+    return `<tr><th scope="row"><span class="m-code">${esc(o.code)}</span><span class="m-city">${esc(o.city)}${o.km != null ? ` · ${o.km} km` : ''}</span></th>${cells}</tr>`;
+  }).join('') : `<tr><th scope="row"><span class="m-code">…</span><span class="m-city">${groups.origin.loading ? 'Luchthavens laden' : 'Geen vertrekluchthaven'}</span></th><td><button type="button" class="m-cell" data-state="idle" disabled><span class="m-price">—</span></button></td></tr>`;
+
+  const changed = setHtml(el.matrix, `<caption class="vh">Laagste prijs per vertrekluchthaven en bestemming</caption>${head}<tbody>${rows}</tbody>`);
+  el.matrixNote.hidden = !(search && best != null);
+
+  if (changed && focusKey) el.matrix.querySelector(`.m-cell[data-key="${CSS.escape(focusKey)}"]`)?.focus();
+}
+
+el.matrix.addEventListener('click', e => {
+  const btn = e.target.closest('.m-cell[data-key]');
+  if (!btn || btn.disabled) return;
+  const [o, d] = btn.dataset.key.split('>');
+  view.filter = view.filter?.o === o && view.filter?.d === d ? null : { o, d };
+  view.limit = LIST_STEP;
+  renderAll();
+  if (!view.filter) return;
+  // Focus leaves the matrix, so live re-renders do not pull the page back to the table.
+  (el.resultList.querySelector('.flight-main') || el.filterChip).focus({ preventScroll: true });
+  el.results.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
+});
+
+el.filterChip.addEventListener('click', () => {
+  view.filter = null;
+  renderAll();
+  el.resultList.querySelector('.flight-main')?.focus();
+});
+
+$$('input[name="sort"]').forEach(r => r.addEventListener('change', () => {
+  view.sort = r.value;
+  renderResults();
+}));
+
+el.moreResults.addEventListener('click', () => {
+  view.limit += LIST_STEP;
+  renderResults();
+});
+
+function depTime(f) {
+  return parseWhen(f?.departure, search.depart)?.date?.getTime() ?? Infinity;
+}
+
+function listItems() {
+  if (!search) return [];
+  let items = search.mode === 'combi'
+    ? search.combos.slice()
+    : search.flights.filter(f => f.price != null);
+  if (view.filter) items = items.filter(i => i.origin === view.filter.o && i.dest_out === view.filter.d);
+
+  const price = itemPrice;
+  const dur = it => search.mode === 'combi'
+    ? (parseDuration(it.outbound?.duration) ?? 1e6) + (parseDuration(it.return?.duration) ?? 1e6)
+    : parseDuration(it.duration) ?? 1e6;
+  const dep = it => search.mode === 'combi' ? depTime(it.outbound) : depTime(it);
+  const by = { price: (a, b) => price(a) - price(b), time: (a, b) => dep(a) - dep(b) || price(a) - price(b), duration: (a, b) => dur(a) - dur(b) || price(a) - price(b) };
+  return items.sort(by[view.sort]);
+}
+
+function legLine(o, d, mins, maxDur, stops) {
+  const w = mins && maxDur ? Math.max(0.08, mins / maxDur) : 0;
+  const n = stopsCount(stops) || 0;
+  const dots = Array.from({ length: n }, (_, k) => `<span class="leg-stop" style="--p:${((k + 1) / (n + 1)).toFixed(3)}"></span>`).join('');
+  return `<span class="leg-line" aria-hidden="true"><span class="code">${esc(o)}</span><span class="leg" style="--w:${w.toFixed(3)}"><span class="leg-fill"></span>${dots}</span><span class="code">${esc(d)}</span></span>`;
+}
+
+function cityOf(code) {
+  return search.places[code] || { city: code, km: null, home: false };
+}
+
+function legFacts(f, from, to, ref) {
+  const dep = parseWhen(f.departure, ref);
+  const arr = parseWhen(f.arrival, ref);
+  const o = cityOf(from), d = cityOf(to);
+  const isHome = o.home;
+  return `<dl class="facts">
+    <div><dt>Vertrek</dt><dd>${dep ? `${hm(dep)} ${dayLabel(dep)}` : esc(f.departure || 'Onbekend')}, ${esc(o.city)} (${esc(from)})${isHome && o.km != null ? ` <span class="muted">· ${o.km} km van huis</span>` : ''}</dd></div>
+    <div><dt>Aankomst</dt><dd>${arr ? `${hm(arr)} ${dayLabel(arr)}` : esc(f.arrival || 'Onbekend')}, ${esc(d.city)} (${esc(to)})</dd></div>
+    <div><dt>Reis</dt><dd>${fmtDuration(parseDuration(f.duration), f.duration)}, ${stopsLabel(f.stops).toLowerCase()}</dd></div>
+    <div><dt>Maatschappij</dt><dd>${esc(f.name || 'Onbekend')}</dd></div>
+  </dl>`;
+}
+
+const bookLink = (url, label) => url
+  ? `<a class="btn-book" href="${esc(url)}" target="_blank" rel="noopener">${label} ${icon('external', 'icon icon-sm')}<span class="vh">(opent in nieuw tabblad)</span></a>`
+  : '';
+
+const isoDay = iso => dayLabel({ date: new Date(`${iso}T12:00:00`) });
+
+// Google lists only outbound flights for a round trip, so the return options load when a row opens.
+const returnFlights = new Map();
+const returnKey = f => `${f.dest_return || f.dest_out}|${f.origin}|${f.return_date}|${search.query.max_stops}|${search.query.seat}`;
+
+async function loadReturns(f) {
+  const key = returnKey(f);
+  if (returnFlights.has(key) && returnFlights.get(key).status !== 'error') return;
+  returnFlights.set(key, { status: 'loading' });
+  queueRender();
+  const q = search.query;
+  const params = new URLSearchParams({ frm: f.dest_return || f.dest_out, to: f.origin, date: f.return_date, adults: q.adults, seat: q.seat });
+  if (q.max_stops != null) params.set('max_stops', q.max_stops);
+  try {
+    const res = await fetch(`/return-flights?${params}`);
+    if (!res.ok) throw new Error(res.statusText);
+    returnFlights.set(key, { status: 'done', flights: (await res.json()).flights });
+  } catch {
+    returnFlights.set(key, { status: 'error' });
+  }
+  queueRender();
+}
+
+function returnBlock(f) {
+  const r = returnFlights.get(returnKey(f)) || { status: 'loading' };
+  const from = f.dest_return || f.dest_out;
+  const title = `<span class="leg-block-title">Terug · ${isoDay(f.return_date)}, ${esc(cityOf(from).city)} (${esc(from)}) naar ${esc(cityOf(f.origin).city)} (${esc(f.origin)})</span>`;
+  if (r.status === 'loading') return `<div class="leg-block">${title}<p class="ret-msg">Terugvluchten op deze dag ophalen…</p></div>`;
+  if (r.status === 'error') return `<div class="leg-block">${title}<p class="ret-msg">De terugvluchten konden niet worden opgehaald. <button type="button" class="ret-retry" data-retry="${esc(flightKey(f))}">Opnieuw proberen</button></p></div>`;
+  if (!r.flights.length) return `<div class="leg-block">${title}<p class="ret-msg">Geen losse terugvluchten gevonden op deze dag. Bekijk de opties in Google Flights.</p></div>`;
+
+  const airlines = new Set(String(f.name).split(/,\s*/));
+  const same = rf => String(rf.name).split(/,\s*/).some(n => airlines.has(n));
+  const at = rf => parseWhen(rf.departure, f.return_date)?.date?.getTime() ?? Infinity;
+  const list = r.flights.slice().sort((a, b) => same(b) - same(a) || at(a) - at(b)).slice(0, 8);
+  return `<div class="leg-block">${title}
+    <ul class="ret-list">${list.map(rf => `<li class="ret-opt">
+      <span class="f-times">${timesLabel(rf, f.return_date)}</span>
+      <span class="ret-name">${esc(rf.name)}${same(rf) ? ' <span class="ret-same">Zelfde maatschappij</span>' : ''}</span>
+      <span class="ret-dur">${fmtDuration(parseDuration(rf.duration), rf.duration)} · ${stopsLabel(rf.stops).toLowerCase()}</span>
+    </li>`).join('')}</ul>
+    <p class="ret-msg">Je kiest de terugvlucht in Google Flights. ${money(f.price, f.price_raw)} is de laagste retourprijs met deze heenvlucht; een andere terugvlucht kan duurder zijn.</p>
+  </div>`;
+}
+
+function flightRow(f, i, maxDur, best) {
+  const key = flightKey(f);
+  const open = expanded.has(key);
+  const id = `fd-${i}`;
+  const dep = parseWhen(f.departure, search.depart);
+  const mins = parseDuration(f.duration);
+  const n = stopsCount(f.stops);
+  const back = f.return_date ? `terug ${isoDay(f.return_date)}` : '';
+  return `<li class="flight${f.price === best ? ' is-best' : ''}">
+    <button type="button" class="flight-main" aria-expanded="${open}" aria-controls="${id}" data-key="${esc(key)}">
+      <span class="f-rank">${i + 1}</span>
+      <span class="f-route">${legLine(f.origin, f.dest_out, mins, maxDur, f.stops)}<span class="vh">${esc(f.origin)} naar ${esc(f.dest_out)}</span></span>
+      <span class="f-when"><span class="f-line"><span class="f-times">${timesLabel(f, search.depart)}</span><span class="f-sub">${[dayLabel(dep), esc(f.name)].filter(Boolean).join(' · ')}</span>${back ? `<span class="f-sub">${back}</span>` : ''}</span></span>
+      <span class="f-dur"><span class="f-line"><span class="f-main">${fmtDuration(mins, f.duration)}</span><span class="f-sub${n === 0 ? ' is-direct' : ''}">${stopsLabel(f.stops)}</span></span></span>
+      <span class="f-price"><span class="f-amount">${money(f.price, f.price_raw)}</span></span>
+      ${icon('chevron', 'icon f-chev')}
+    </button>
+    <div class="flight-detail" id="${id}" ${open ? '' : 'hidden'}>
+      ${f.return_date
+        ? `<div class="leg-block"><span class="leg-block-title">Heen</span>${legFacts(f, f.origin, f.dest_out, search.depart)}</div>${returnBlock(f)}`
+        : legFacts(f, f.origin, f.dest_out, search.depart)}
+      <div class="book">${bookLink(f.url, 'Open in Google Flights')}</div>
+    </div>
+  </li>`;
+}
+
+function comboRow(c, i, maxDur, best) {
+  const key = comboKey(c);
+  const open = expanded.has(key);
+  const id = `fd-${i}`;
+  const ob = c.outbound || {}, rt = c.return || {};
+  const legs = [
+    { tag: 'Heen', f: ob, from: c.origin, to: c.dest_out, ref: search.depart },
+    { tag: 'Terug', f: rt, from: c.dest_return, to: c.return_to || c.origin, ref: search.returnDate || search.depart },
+  ];
+  return `<li class="flight${c.total_price === best ? ' is-best' : ''}">
+    <button type="button" class="flight-main" aria-expanded="${open}" aria-controls="${id}" data-key="${esc(key)}">
+      <span class="f-rank">${i + 1}</span>
+      <span class="f-route">${legs.map(l => `<span class="leg-tag">${l.tag}</span>${legLine(l.from, l.to, parseDuration(l.f.duration), maxDur, l.f.stops)}`).join('')}<span class="vh">Heen ${esc(c.origin)} naar ${esc(c.dest_out)}, terug ${esc(c.dest_return)} naar ${esc(c.return_to || c.origin)}</span></span>
+      <span class="f-when">${legs.map(l => {
+        const dep = parseWhen(l.f.departure, l.ref);
+        return `<span class="f-line"><span class="f-times">${timesLabel(l.f, l.ref)}</span><span class="f-sub">${[dayLabel(dep), esc(l.f.name)].filter(Boolean).join(' · ')}</span></span>`;
+      }).join('')}</span>
+      <span class="f-dur">${legs.map(l => `<span class="f-line"><span class="f-main">${fmtDuration(parseDuration(l.f.duration), l.f.duration)}</span><span class="f-sub${stopsCount(l.f.stops) === 0 ? ' is-direct' : ''}">${stopsLabel(l.f.stops)}</span></span>`).join('')}</span>
+      <span class="f-price"><span class="f-amount">${money(c.total_price, ob.price_raw)}</span><span class="f-sub">${money(ob.price, ob.price_raw)} + ${money(rt.price, rt.price_raw)}</span></span>
+      ${icon('chevron', 'icon f-chev')}
+    </button>
+    <div class="flight-detail" id="${id}" ${open ? '' : 'hidden'}>
+      ${legs.map(l => `<div class="leg-block"><span class="leg-block-title">${l.tag} · ${money(l.f.price, l.f.price_raw)}</span>${legFacts(l.f, l.from, l.to, l.ref)}</div>`).join('')}
+      <div class="book">${bookLink(ob.url, 'Heenvlucht in Google Flights')}${bookLink(rt.url, 'Terugvlucht in Google Flights')}</div>
+    </div>
+  </li>`;
+}
+
+function renderResults() {
+  if (!search || (search.error && !search.flights.length && !search.combos.length)) {
+    el.results.hidden = true;
+    return;
+  }
+  el.results.hidden = false;
+  const combi = search.mode === 'combi';
+  const noun = n => combi ? (n === 1 ? 'combinatie' : 'combinaties') : (n === 1 ? 'vlucht' : 'vluchten');
+  const items = listItems();
+  const shown = items.slice(0, view.limit);
+
+  el.resultsCount.innerHTML = search.done
+    ? `${items.length} ${noun(items.length)}${search.returnDate && !combi ? ', prijzen zijn retour' : ''}`
+    : `${items.length} ${noun(items.length)} tot nu toe, zoekt verder…`;
+
+  el.filterChip.hidden = !view.filter;
+  if (view.filter) el.filterChip.innerHTML = `${esc(view.filter.o)} ${icon('arrow', 'icon icon-sm')} ${esc(view.filter.d)} ${icon('x', 'icon icon-sm')}<span class="vh">filter wissen</span>`;
+
+  if (!items.length) {
+    setHtml(el.resultList, search.done ? emptyState() : `<li class="empty"><p class="status">Nog geen vluchten binnen. De eerste resultaten verschijnen hier zodra een route klaar is.</p></li>`);
+    el.moreResults.hidden = true;
+    return;
+  }
+
+  const durOf = it => combi
+    ? Math.max(parseDuration(it.outbound?.duration) || 0, parseDuration(it.return?.duration) || 0)
+    : parseDuration(it.duration) || 0;
+  const maxDur = Math.max(1, ...items.map(durOf));
+  const best = bestPrice();
+  const focusKey = document.activeElement?.closest?.('.flight-main')?.dataset.key;
+
+  const changed = setHtml(el.resultList, shown.map((it, i) => combi ? comboRow(it, i, maxDur, best) : flightRow(it, i, maxDur, best)).join(''));
+
+  const rest = items.length - shown.length;
+  el.moreResults.hidden = rest <= 0;
+  el.moreResults.textContent = `Toon ${Math.min(rest, LIST_STEP)} meer`;
+
+  if (changed && focusKey) el.resultList.querySelector(`.flight-main[data-key="${CSS.escape(focusKey)}"]`)?.focus();
+}
+
+function emptyState() {
+  const tips = [];
+  if (radio('max_stops') === '0') tips.push('Sta overstappen toe; nu zoeken we alleen directe vluchten.');
+  if (!flexDep() && !flexRet()) tips.push('Zet de heen- of terugdatum op ± 1 of ± 2 dagen flexibel.');
+  if (active('dest').length < 3) tips.push('Neem meer luchthavens rond je bestemming mee.');
+  tips.push('Controleer of er op deze data gevlogen wordt.');
+  if (view.filter) return `<li class="empty"><h3>Geen vluchten op deze route</h3><p class="status">Wis het filter om alle routes te zien.</p></li>`;
+  return `<li class="empty"><h3>Geen vluchten gevonden</h3><ul>${tips.map(t => `<li>${t}</li>`).join('')}</ul></li>`;
+}
+
+const standardFlight = key => search.mode === 'standard' && search.flights.find(f => flightKey(f) === key);
+
+el.resultList.addEventListener('click', e => {
+  const retry = e.target.closest('.ret-retry');
+  if (retry) {
+    loadReturns(standardFlight(retry.dataset.retry));
+    return;
+  }
+  const btn = e.target.closest('.flight-main');
+  if (!btn) return;
+  const key = btn.dataset.key;
+  const open = btn.getAttribute('aria-expanded') !== 'true';
+  open ? expanded.add(key) : expanded.delete(key);
+  btn.setAttribute('aria-expanded', String(open));
+  document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+  const f = open && standardFlight(key);
+  if (f?.return_date) loadReturns(f);
+});
+
+// ── Recent searches ───────────────────────
+
+// Older history entries only have flex_days, which applied to both dates.
+const flexOf = h => [h.flex_depart ?? h.flex_days ?? 0, h.flex_return ?? (h.return_date ? h.flex_days ?? 0 : 0)];
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveHistory(body) {
+  const entry = { ...body, ts: Date.now() };
+  const id = h => `${h.destination}|${h.depart}|${h.return_date}|${flexOf(h)}`;
+  const history = [entry, ...loadHistory().filter(h => id(h) !== id(entry))].slice(0, HISTORY_MAX);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const history = loadHistory();
+  el.recent.hidden = !history.length;
+  el.recentList.innerHTML = history.map((h, i) => {
+    const codes = (h.dest_codes || []).slice(0, 2).join(', ') || h.destination;
+    const [fd, fr] = flexOf(h);
+    const dates = fmtDate(h.depart) + (fd ? ` ±${fd}` : '') + (h.return_date ? `–${fmtDate(h.return_date)}${fr ? ` ±${fr}` : ''}` : '');
+    return `<li class="tag">
+      <button type="button" class="tag-go" data-idx="${i}"><b>${esc(codes)}</b> ${esc(dates)}</button>
+      <button type="button" class="tag-x" data-idx="${i}" aria-label="Verwijder ${esc(codes)} ${esc(dates)} uit recent">${icon('x', 'icon icon-sm')}</button>
+    </li>`;
+  }).join('');
+}
+
+el.recentList.addEventListener('click', e => {
+  const x = e.target.closest('.tag-x');
+  if (x) {
+    const history = loadHistory();
+    history.splice(+x.dataset.idx, 1);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+    (el.recentList.querySelector('.tag-go') || el.destInput).focus();
+    return;
+  }
+  const go = e.target.closest('.tag-go');
+  if (go) restore(loadHistory()[+go.dataset.idx]);
+});
+
+async function restore(entry) {
+  if (!entry) return;
+  el.destInput.value = entry.destination || '';
+  groups.dest.pick = entry.dest_pick || null;
+  setDepart(entry.depart);
+  setReturn(entry.return_date && entry.return_date >= isoToday() ? entry.return_date : null);
+  departPicker.update({});
+  setAdults(entry.adults || 1);
+  setRadio('max_stops', entry.max_stops == null ? 'all' : entry.max_stops);
+  const [fd, fr] = flexOf(entry);
+  setRadio('flex_dep', fd);
+  setRadio('flex_ret', fr);
+  setRadio('max_dest', entry.max_dest || 1);
+  setRadio('max_origin', entry.max_origin || 5);
+  el.seat.value = entry.seat || 'economy';
+  el.originInput.value = entry.home || HOME_DEFAULT;
+  groups.dest.off.clear();
+  groups.origin.off.clear();
+  for (const kind of ['dest', 'origin']) {
+    groups[kind].extra = entry.extras?.[kind] || {};
+    groups[kind].extraFor = groups[kind].input.value.trim().toLowerCase();
+  }
+
+  await Promise.all([lookup('dest'), lookup('origin')]);
+
+  const offExcept = (kind, codes) => new Set(Object.keys(groups[kind].airports).filter(c => !codes.includes(c)));
+  if (entry.dest_codes) groups.dest.off = offExcept('dest', entry.dest_codes);
+  if (entry.origins) groups.origin.off = offExcept('origin', entry.origins);
+  const sameSet = (a, b) => a.length === b.length && a.every(c => b.includes(c));
+  returns.from.linked = !entry.return_from || sameSet(entry.return_from, entry.dest_codes || []);
+  returns.from.off = returns.from.linked ? new Set() : offExcept('dest', entry.return_from);
+  returns.to.linked = !entry.return_to || sameSet(entry.return_to, entry.origins || []);
+  returns.to.off = returns.to.linked ? new Set() : offExcept('origin', entry.return_to);
+  setRadio('ret_home', entry.return_to ? 'choose' : 'same');
+  setRadio('combi', entry.combi ? 'true' : 'false');
+  renderPosts('dest');
+  renderPosts('origin');
+  update();
+
+  const badDate = checkDates(true);
+  (badDate || el.searchBtn).focus();
+}
+
+// ── Init ──────────────────────────────────
+
+el.originInput.value = localStorage.getItem(HOME_KEY) || HOME_DEFAULT;
+setAdults(1);
+renderHistory();
+update();
+lookup('origin');
+</script>
+</body>
+</html>

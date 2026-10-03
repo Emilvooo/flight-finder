@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-03T12:16:29Z",
+  "title": "Design System: Flight Finder",
+  "extensions": {
+    "colorMeta": {
+      "route-yellow": {
+        "role": "primary",
+        "displayName": "Route Yellow",
+        "canonical": "#FFD100",
+        "tonalRamp": [
+          "oklch(15% 0.179 92.7)",
+          "oklch(25% 0.179 92.7)",
+          "oklch(35% 0.179 92.7)",
+          "oklch(45% 0.179 92.7)",
+          "oklch(55% 0.179 92.7)",
+          "oklch(65% 0.179 92.7)",
+          "oklch(80% 0.179 92.7)",
+          "oklch(95% 0.179 92.7)"
+        ]
+      },
+      "route-yellow-deep": {
+        "role": "primary-state",
+        "displayName": "Route Yellow Deep",
+        "canonical": "#F2C200",
+        "tonalRamp": [
+          "oklch(15% 0.170 90.6)",
+          "oklch(25% 0.170 90.6)",
+          "oklch(35% 0.170 90.6)",
+          "oklch(45% 0.170 90.6)",
+          "oklch(55% 0.170 90.6)",
+          "oklch(65% 0.170 90.6)",
+          "oklch(80% 0.170 90.6)",
+          "oklch(95% 0.170 90.6)"
+        ]
+      },
+      "sign-blue": {
+        "role": "secondary",
+        "displayName": "Sign Blue",
+        "canonical": "#0E4C92",
+        "tonalRamp": [
+          "oklch(15% 0.130 255.5)",
+          "oklch(25% 0.130 255.5)",
+          "oklch(35% 0.130 255.5)",
+          "oklch(45% 0.130 255.5)",
+          "oklch(55% 0.130 255.5)",
+          "oklch(65% 0.130 255.5)",
+          "oklch(80% 0.130 255.5)",
+          "oklch(95% 0.130 255.5)"
+        ]
+      },
+      "sign-blue-deep": {
+        "role": "secondary-state",
+        "displayName": "Sign Blue Deep",
+        "canonical": "#0A3B73",
+        "tonalRamp": [
+          "oklch(15% 0.109 255.5)",
+          "oklch(25% 0.109 255.5)",
+          "oklch(35% 0.109 255.5)",
+          "oklch(45% 0.109 255.5)",
+          "oklch(55% 0.109 255.5)",
+          "oklch(65% 0.109 255.5)",
+          "oklch(80% 0.109 255.5)",
+          "oklch(95% 0.109 255.5)"
+        ]
+      },
+      "sign-blue-hover": {
+        "role": "secondary-state",
+        "displayName": "Sign Blue Hover",
+        "canonical": "#1C5CA6",
+        "tonalRamp": [
+          "oklch(15% 0.135 255.0)",
+          "oklch(25% 0.135 255.0)",
+          "oklch(35% 0.135 255.0)",
+          "oklch(45% 0.135 255.0)",
+          "oklch(55% 0.135 255.0)",
+          "oklch(65% 0.135 255.0)",
+          "oklch(80% 0.135 255.0)",
+          "oklch(95% 0.135 255.0)"
+        ]
+      },
+      "sign-white": {
+        "role": "neutral",
+        "displayName": "Sign White",
+        "canonical": "#FFFFFF"
+      },
+      "sign-white-muted": {
+        "role": "neutral",
+        "displayName": "Sign White Muted",
+        "canonical": "rgba(255, 255, 255, 0.8)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9 / 0.8)",
+          "oklch(25% 0.000 89.9 / 0.8)",
+          "oklch(35% 0.000 89.9 / 0.8)",
+          "oklch(45% 0.000 89.9 / 0.8)",
+          "oklch(55% 0.000 89.9 / 0.8)",
+          "oklch(65% 0.000 89.9 / 0.8)",
+          "oklch(80% 0.000 89.9 / 0.8)",
+          "oklch(95% 0.000 89.9 / 0.8)"
+        ]
+      },
+      "sign-white-soft": {
+        "role": "neutral",
+        "displayName": "Sign White Soft",
+        "canonical": "rgba(255, 255, 255, 0.68)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9 / 0.68)",
+          "oklch(25% 0.000 89.9 / 0.68)",
+          "oklch(35% 0.000 89.9 / 0.68)",
+          "oklch(45% 0.000 89.9 / 0.68)",
+          "oklch(55% 0.000 89.9 / 0.68)",
+          "oklch(65% 0.000 89.9 / 0.68)",
+          "oklch(80% 0.000 89.9 / 0.68)",
+          "oklch(95% 0.000 89.9 / 0.68)"
+        ]
+      },
+      "sign-rule": {
+        "role": "neutral",
+        "displayName": "Sign Rule",
+        "canonical": "rgba(255, 255, 255, 0.26)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9 / 0.26)",
+          "oklch(25% 0.000 89.9 / 0.26)",
+          "oklch(35% 0.000 89.9 / 0.26)",
+          "oklch(45% 0.000 89.9 / 0.26)",
+          "oklch(55% 0.000 89.9 / 0.26)",
+          "oklch(65% 0.000 89.9 / 0.26)",
+          "oklch(80% 0.000 89.9 / 0.26)",
+          "oklch(95% 0.000 89.9 / 0.26)"
+        ]
+      },
+      "on-yellow-ink": {
+        "role": "neutral",
+        "displayName": "On Yellow Ink",
+        "canonical": "#141A24"
+      },
+      "cover": {
+        "role": "neutral",
+        "displayName": "Cover",
+        "canonical": "#090C11"
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#0D1117"
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "#161C25"
+      },
+      "panel-hover": {
+        "role": "neutral",
+        "displayName": "Panel Hover",
+        "canonical": "#1D2530"
+      },
+      "raised": {
+        "role": "neutral",
+        "displayName": "Raised",
+        "canonical": "#2A3546"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#ECEFF3"
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "#B7C0CC"
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "#8F99A8"
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Faint",
+        "canonical": "#4A5463"
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#2E3846"
+      },
+      "rule-soft": {
+        "role": "neutral",
+        "displayName": "Rule Soft",
+        "canonical": "#232B36"
+      },
+      "route-line": {
+        "role": "secondary",
+        "displayName": "Route Line",
+        "canonical": "#5E9EEA"
+      },
+      "focus": {
+        "role": "secondary-state",
+        "displayName": "Focus",
+        "canonical": "#8DBBF3"
+      },
+      "error-ink": {
+        "role": "tertiary",
+        "displayName": "Error Ink",
+        "canonical": "#FF9389"
+      },
+      "error-surface": {
+        "role": "tertiary",
+        "displayName": "Error Surface",
+        "canonical": "rgba(255, 100, 90, 0.12)"
+      },
+      "error-rule": {
+        "role": "tertiary",
+        "displayName": "Error Rule",
+        "canonical": "rgba(255, 120, 110, 0.35)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Brand name and prominent airport sign lettering; Archivo uses its condensed variable width."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Main panel and page headings in heavy, condensed Archivo."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Smaller section headings, especially on narrow screens."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Normal-width copy, form values, route details, and status."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field names, table context, and compact status labels."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sign-frame",
+        "value": "inset 0 0 0 4px var(--blue), inset 0 0 0 6px var(--on-blue)",
+        "purpose": "Double inset border that gives airport signs their framed wayfinding edge."
+      },
+      {
+        "name": "primary-action-frame",
+        "value": "inset 0 0 0 4px var(--yellow), inset 0 0 0 6px var(--ink)",
+        "purpose": "Inset ink frame around the yellow search action."
+      },
+      {
+        "name": "selected-segment",
+        "value": "0 1px 2px rgba(20, 26, 36, 0.16)",
+        "purpose": "Shallow separation for the selected paper segment only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Direct, quick ease for disclosure, selection, progress, and route-detail transitions."
+      },
+      {
+        "name": "control-state",
+        "value": "0.15s",
+        "purpose": "Color and border feedback on buttons, fields, and choices."
+      },
+      {
+        "name": "result-detail",
+        "value": "0.25s",
+        "purpose": "Small vertical reveal when a flight row is expanded."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "Near-instant transitions and a single animation iteration when reduced motion is requested."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "single-column",
+        "value": "1080px"
+      },
+      {
+        "name": "compact-mobile",
+        "value": "560px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Search Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Full-width yellow action with a structural inset frame.",
+      "html": "<button class=\"ds-btn-go\" type=\"button\">Zoek vluchten</button>",
+      "css": ".ds-btn-go { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 18px 22px; border: 0; border-radius: var(--r-sign); background: var(--yellow); color: var(--ink); box-shadow: inset 0 0 0 4px var(--yellow), inset 0 0 0 6px var(--ink); font-family: var(--font); font-stretch: 72%; font-weight: 850; font-size: 1.75rem; line-height: 1; cursor: pointer; transition: background 0.15s, box-shadow 0.15s, transform 0.1s; } .ds-btn-go:hover:not(:disabled) { background: var(--yellow-2); box-shadow: inset 0 0 0 4px var(--yellow-2), inset 0 0 0 6px var(--ink); } .ds-btn-go:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; } .ds-btn-go:active:not(:disabled) { transform: translateY(1px); } .ds-btn-go:disabled { cursor: progress; }"
+    },
+    {
+      "name": "Booking Link",
+      "kind": "button",
+      "refersTo": "button-booking",
+      "description": "Compact blue link that continues to the external flight provider.",
+      "html": "<a class=\"ds-booking\" href=\"#\">Open in Google Flights</a>",
+      "css": ".ds-booking { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: var(--r-ctl); background: var(--blue); color: var(--on-blue); font-family: var(--font); font-weight: 650; font-size: 0.875rem; text-decoration: none; transition: background 0.15s; } .ds-booking:hover { background: var(--blue-3); } .ds-booking:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }"
+    },
+    {
+      "name": "Airport Input",
+      "kind": "input",
+      "refersTo": "input-sign",
+      "description": "White, borderless location field inset into an airport sign.",
+      "html": "<input class=\"ds-sign-input\" type=\"text\" placeholder=\"Stad of luchthaven\" aria-label=\"Bestemming\">",
+      "css": ".ds-sign-input { width: 100%; border: 0; border-radius: var(--r-ctl); background: var(--page); color: var(--ink); font-family: var(--font); font-size: 1.25rem; font-weight: 600; line-height: 1.2; padding: 12px 14px; } .ds-sign-input::placeholder { color: var(--ink-3); font-weight: 450; } .ds-sign-input:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }"
+    },
+    {
+      "name": "Paper Field",
+      "kind": "input",
+      "refersTo": "input-paper",
+      "description": "White date or select control with a thin rule and visible field states.",
+      "html": "<input class=\"ds-control\" type=\"text\" value=\"12 okt\" aria-label=\"Heen\">",
+      "css": ".ds-control { width: 100%; min-height: 46px; padding: 0 12px; border: 1px solid var(--rule); border-radius: var(--r-ctl); background: var(--page); color: var(--ink); font-family: var(--font); font-size: 1rem; font-weight: 550; transition: border-color 0.15s; } .ds-control:hover { border-color: var(--ink-3); } .ds-control:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; border-color: var(--blue); } .ds-control[aria-invalid=\"true\"] { border-color: var(--red); }"
+    },
+    {
+      "name": "Airport Sign",
+      "kind": "custom",
+      "refersTo": "panel-sign",
+      "description": "Blue location panel with a double inset white frame.",
+      "html": "<fieldset class=\"ds-sign\"><legend>Bestemming</legend><strong>Naar</strong><p>Barcelona</p><small>El Prat · 15 km</small></fieldset>",
+      "css": ".ds-sign { min-width: 0; padding: 18px 18px 16px; border: 0; border-radius: var(--r-sign); background: var(--blue); color: var(--on-blue); box-shadow: inset 0 0 0 4px var(--blue), inset 0 0 0 6px var(--on-blue); font-family: var(--font); } .ds-sign strong { display: block; margin-bottom: 12px; font-stretch: 72%; font-weight: 850; font-size: 1.875rem; line-height: 1; } .ds-sign p { margin: 0; padding: 12px 14px; border-radius: var(--r-ctl); background: var(--page); color: var(--ink); font-size: 1.25rem; font-weight: 600; } .ds-sign small { display: block; margin-top: 10px; color: var(--on-blue-2); font-size: 0.875rem; } .ds-sign:focus-within { --focus: var(--yellow); }"
+    },
+    {
+      "name": "Paper Page",
+      "kind": "card",
+      "refersTo": "panel-paper",
+      "description": "Flat, bordered white page for dates and trip options.",
+      "html": "<section class=\"ds-page\"><strong>Wanneer</strong><label>Heen<input class=\"ds-page-input\" value=\"12 okt\"></label></section>",
+      "css": ".ds-page { display: grid; gap: 16px; min-width: 0; padding: 18px; border: 1px solid var(--rule); border-radius: var(--r-sign); background: var(--page); color: var(--ink); font-family: var(--font); } .ds-page > strong { font-stretch: 72%; font-weight: 850; font-size: 1.625rem; line-height: 1; } .ds-page label { display: grid; gap: 6px; color: var(--ink-2); font-size: 0.875rem; font-weight: 650; } .ds-page-input { min-height: 46px; padding: 0 12px; border: 1px solid var(--rule); border-radius: var(--r-ctl); background: var(--page); color: var(--ink); font: inherit; } .ds-page-input:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; }"
+    },
+    {
+      "name": "Segmented Choice",
+      "kind": "custom",
+      "refersTo": "radio-segment",
+      "description": "Compact radio choices with a white selected segment.",
+      "html": "<div class=\"ds-segment\"><label><input type=\"radio\" name=\"ds-choice\" checked><span>Exact</span></label><label><input type=\"radio\" name=\"ds-choice\"><span>± 1 dag</span></label></div>",
+      "css": ".ds-segment { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-ctl); background: var(--rule-2); font-family: var(--font); } .ds-segment label { position: relative; display: block; } .ds-segment input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; } .ds-segment span { display: block; padding: 7px 12px; border-radius: 4px; color: var(--ink-2); font-size: 0.9375rem; font-weight: 600; white-space: nowrap; transition: background 0.15s, color 0.15s; } .ds-segment label:hover span { color: var(--ink); } .ds-segment input:checked + span { background: var(--page); color: var(--ink); box-shadow: 0 1px 2px rgba(20, 26, 36, 0.16); } .ds-segment input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 1px; } .ds-segment input:disabled + span { color: var(--ink-3); opacity: 0.55; }"
+    },
+    {
+      "name": "Route Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip-filter",
+      "description": "Ink-filled chip that names and clears an active route filter.",
+      "html": "<button class=\"ds-chip\" type=\"button\">AMS → BCN · Wissen</button>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px 7px 12px; border: 0; border-radius: var(--r-ctl); background: var(--ink); color: var(--page); font-family: var(--font); font-size: 0.9375rem; font-weight: 650; cursor: pointer; transition: background 0.15s; } .ds-chip:hover { background: #2A3342; } .ds-chip:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }"
+    },
+    {
+      "name": "Best Price Cell",
+      "kind": "custom",
+      "refersTo": "price-cell-best",
+      "description": "Yellow matrix cell that identifies the cheapest route and toggles its result filter.",
+      "html": "<button class=\"ds-price-cell\" type=\"button\" aria-pressed=\"true\">€148</button>",
+      "css": ".ds-price-cell { position: relative; width: 100%; min-width: 6.5rem; min-height: 60px; display: flex; align-items: center; justify-content: flex-end; padding: 10px 14px 14px; border: 0; background: var(--yellow); color: var(--ink); font-family: var(--font); font-size: 1.1875rem; font-weight: 750; cursor: pointer; transition: background 0.3s, color 0.3s; } .ds-price-cell[aria-pressed=\"true\"] { box-shadow: inset 0 0 0 3px var(--ink); } .ds-price-cell:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }"
+    },
+    {
+      "name": "Flight Result Row",
+      "kind": "custom",
+      "refersTo": "result-row",
+      "description": "Expandable white result row with a duration-scaled route line and a visible fare.",
+      "html": "<li class=\"ds-flight\"><button class=\"ds-flight-main\" type=\"button\" aria-expanded=\"false\"><span class=\"ds-rank\">1</span><span class=\"ds-route\"><span>AMS</span><i class=\"ds-leg\"><b></b><em></em></i><span>BCN</span></span><span>14:35 – 16:25</span><span>1u 50m</span><strong>€148</strong></button><div class=\"ds-flight-detail\" hidden>Vertrek · Aankomst · Reisduur</div></li>",
+      "css": ".ds-flight { background: var(--page); } .ds-flight + .ds-flight { border-top: 1px solid var(--rule-2); } .ds-flight-main { width: 100%; display: grid; grid-template-columns: 1.75rem minmax(12rem, 1.3fr) minmax(9rem, 1fr) minmax(6.5rem, 0.7fr) minmax(5.5rem, auto); align-items: center; gap: 16px; padding: 14px 16px; border: 0; background: none; color: var(--ink); text-align: left; font-family: var(--font); transition: background 0.15s; cursor: pointer; } .ds-flight-main:hover, .ds-flight-main[aria-expanded=\"true\"] { background: var(--page-hover); } .ds-flight-main:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; } .ds-rank { color: var(--ink-3); font-size: 0.875rem; } .ds-route { display: grid; grid-template-columns: 2.6rem minmax(3rem, 1fr) 2.6rem; align-items: center; gap: 8px; font-stretch: 78%; font-size: 1.0625rem; font-weight: 800; } .ds-leg { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(var(--rule), var(--rule)) center / 100% 2px no-repeat; } .ds-leg b { position: absolute; inset: 0 auto 0 0; width: 64%; border-radius: 3px; background: var(--blue); } .ds-leg em { position: absolute; top: 50%; left: 35%; width: 10px; height: 10px; transform: translate(-50%, -50%); border: 2.5px solid var(--blue); border-radius: 50%; background: var(--page); } .ds-flight-detail { padding: 4px 16px 18px calc(1.75rem + 32px); background: var(--page-hover); font-size: 0.9375rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Route Booklet",
+    "overview": "The interface reads like a printed route guide: a yellow wordmark and cover stripe opens onto blue wayfinding signs, dark panels fields, and a live fare atlas on a deeper ground. The visual hierarchy follows the travel path from location choices to dates, route prices, and flight details.\n\nThe system is direct and information-dense without looking like an online travel agency. Flat color, clear rules, tabular figures, and a single Archivo family keep the live search readable as it fills in.",
+    "keyCharacteristics": [
+      "Yellow cover and search action; blue wayfinding surfaces.",
+      "Dark panels and tables on a deeper ground.",
+      "Condensed Archivo for sign lettering and route codes; tabular figures for comparison.",
+      "Flat surfaces, thin rules, and structural inset frames."
+    ],
+    "rules": [
+      {
+        "name": "The Route Sign Rule",
+        "body": "Keep yellow for the wordmark and cover stripe, the main search action, the best fare, and selected dates, always with On-Yellow Ink on top. Use blue for airport wayfinding and price-table headings; keep the rest of the data on dark panels.",
+        "section": "colors"
+      },
+      {
+        "name": "The Condense-for-Wayfinding Rule",
+        "body": "Use Archivo's condensed width for prominent signs and airport codes; keep explanatory copy at normal width.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Print Rule",
+        "body": "Build depth with tone steps, rules, and inset frames. Do not add ambient card shadows, gradients, or glow; only true overlays (the date picker) cast a shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "One Dark Theme",
+        "body": "The product has a single dark theme; do not add a light mode or theme switch.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do reserve route yellow for the cover band, main search action, and best-price emphasis.",
+      "Do use blue sign surfaces for airport wayfinding and price-table headings, with the inset white sign frame.",
+      "Do keep price data on dark panels over the deeper ground, using thin rules to organize it.",
+      "Do use tabular figures and duration-proportional route lines to support comparison.",
+      "Do expand a flight row only after activation, so keyboard focus does not move the results list."
+    ],
+    "donts": [
+      "Don't add ambient card shadows, gradients, glow, or glass effects.",
+      "Don't use the yellow accent as a broad fill for ordinary fields or long result rows.",
+      "Don't expand result details merely because a row receives keyboard focus.",
+      "Don't remove a toggled-off airport from its sign list; show its disabled state in place."
+    ]
+  }
+}

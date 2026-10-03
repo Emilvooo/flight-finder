@@ -1,0 +1,130 @@
+{
+  "title": "Kies de visuele wereld voor Flight Finder",
+  "question": "De worp koos 'Routeboekje & wegwijzer'. Houden, een alternatief kiezen, of opnieuw gooien?",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Routeboekje & wegwijzer",
+      "kicker": "THE ROLL",
+      "lineage": "ANWB-routeboekjes, blauwe wegwijzers en de afstandentabel uit de wegenatlas",
+      "thesis": "Zoeken is een route uitzetten: blauwe wegwijzers met kilometers, en een afstandentabel die zich live vult met prijzen.",
+      "palette": ["#FFD100", "#0E4C92", "#F6F3EA", "#141A24", "#D52B1E"],
+      "materials": ["geel routeboekje-omslag", "vlak blauw bordemail", "gedrukte afstandentabel"],
+      "viewport": "Gele kopband met de naam; een blauw bord 'Naar ___' als hoofdinvoer met data ernaast; daaronder het wegwijzerbord 'Vanaf thuis' met elke vertrekluchthaven en zijn km, aan/uit te zetten.",
+      "risk": "Kan naar wegenwacht-nostalgie neigen als de borden decoratief worden in plaats van de echte bediening.",
+      "raised": [
+        { "from": "challenger-labanotation", "raise": "Vliegduur wordt een balk met exacte lengte, zodat je duur vergelijkt zonder te lezen." },
+        { "from": "challenger-metro", "raise": "Geen kaartranden, schaduwen, glas of verloop: borden zijn vlakke kleurvelden en de type is de interface." },
+        { "from": "challenger-streaming", "raise": "Elke resultaatregel blijft rustig; pas bij focus opent hij met aankomst, overstap en boeklink." },
+        { "from": "challenger-exposure", "raise": "Alle bedragen en tijden in tabular figures; een uitgezette luchthaven is een doorgestreepte regel." }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Schiphol-bewegwijzering",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Mijksenaars gele Schiphol-borden met zwarte letters en pictogrammen",
+      "thesis": "De zoektocht als luchthavenbewegwijzering: geel voor waar je heen gaat, zwart voor waar je vandaan komt.",
+      "palette": ["#FFCC00", "#1A1A1A", "#FFFFFF", "#2D6CB5"],
+      "materials": ["geel signage-paneel", "pictogrammen", "grote IATA-codes"],
+      "viewport": "Een geel bord over de volle breedte met 'Naar ___', vertrekluchthavens als zwarte gate-borden, resultaten als vertrekregels.",
+      "risk": "Het meest voor de hand liggende luchtvaartbeeld; dicht bij wat elke vluchttool al aanvoelt."
+    },
+    {
+      "id": "challenger-streaming",
+      "label": "Streaming-muur",
+      "verdict": "declined",
+      "lineage": "posterrijen van streamingdiensten",
+      "thesis": "Rijen per vertrekluchthaven met vluchttegels die groeien bij focus.",
+      "palette": ["#0B0B0F", "#E50914", "#FFFFFF"],
+      "materials": ["postertegels", "horizontale rails"],
+      "viewport": "Rijen per luchthaven, horizontaal scrollend.",
+      "case": "Verliest op beide assen: prijzen vergelijk je niet over horizontale rails.",
+      "risk": "Verbergt de rangorde op prijs.",
+      "kept": "Rust in de lijst, details pas bij focus.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-streaming-title-card-wall-hero.webp"
+    },
+    {
+      "id": "challenger-metro",
+      "label": "Metro-tegels",
+      "verdict": "declined",
+      "lineage": "Windows Phone Metro",
+      "thesis": "Reusachtige kleine letters en vlakke tegels als hele interface.",
+      "palette": ["#000000", "#1BA1E2", "#FFFFFF"],
+      "materials": ["vlakke tegels", "afgesneden type"],
+      "viewport": "Panorama met bestemming in reuzentype.",
+      "case": "Verliest op beide assen: geen herkenning bij familie, panorama verstopt de stappen.",
+      "risk": "Leest als retro-gadget.",
+      "kept": "Geen chrome; vlakke kleur en type doen het werk.",
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles-hero.webp"
+    },
+    {
+      "id": "challenger-labanotation",
+      "label": "Dansnotatie",
+      "verdict": "declined",
+      "lineage": "Labanotation",
+      "thesis": "Vluchten als blokken waarvan de lengte de exacte duur is.",
+      "palette": ["#FFFFFF", "#111111", "#BDBDBD"],
+      "materials": ["partituurpapier", "gearceerde blokken"],
+      "viewport": "Verticale notenbalk van heen- en terugvlucht.",
+      "case": "Verliest op beide assen: te abstract voor een prijzenzoeker.",
+      "risk": "Onleesbaar zonder legenda.",
+      "kept": "Lengte is exacte duur.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-labanotation-hero.webp"
+    },
+    {
+      "id": "challenger-saville",
+      "label": "Platenhoes-catalogus",
+      "verdict": "declined",
+      "lineage": "Factory Records / Peter Saville",
+      "thesis": "Elke vlucht een catalogusnummer op mat zwart.",
+      "palette": ["#0D0D0D", "#FFFFFF", "#E2B23A"],
+      "materials": ["mat zwart karton", "witte lijnplot"],
+      "viewport": "Een pulslijnplot van prijzen.",
+      "case": "Verliest op beide assen: codes in plaats van woorden helpt geen familielid.",
+      "risk": "Cryptisch.",
+      "kept": "Niets twee keer labelen.",
+      "hero": "https://impeccable.style/worlds/cards/brand-identity-canon-saville-catalog-sleeve-hero.webp"
+    },
+    {
+      "id": "challenger-zoomap",
+      "label": "Dierentuin-plattegrond",
+      "verdict": "declined",
+      "lineage": "gevouwen dierentuinkaarten",
+      "thesis": "Luchthavens als vlakke gekleurde lobben rond thuis.",
+      "palette": ["#8ED462", "#F5F1E4", "#2C2E2A", "#F5E211", "#FF705D"],
+      "materials": ["vlakke kleur", "capsule-knoppen"],
+      "viewport": "Een groene lob met thuis, capsules per luchthaven.",
+      "case": "Verliest op beide assen: speels, maar de kaart helpt niet bij prijsvergelijken.",
+      "risk": "Kinderlijk voor een prijstool.",
+      "kept": "Eén letterfamilie, vlakke kleur zonder korrel.",
+      "hero": "https://impeccable.style/worlds/cards/aww2-zoo-gardens-guide-map-hero.webp"
+    },
+    {
+      "id": "challenger-exposure",
+      "label": "Belichtingskaart",
+      "verdict": "declined",
+      "lineage": "doka-belichtingsnotities",
+      "thesis": "Gelaagde transparante vellen met arcering als belasting.",
+      "palette": ["#E9E6DF", "#3A3A3A", "#C2187A"],
+      "materials": ["calqueervel", "arcering"],
+      "viewport": "Vellen per zoekopdracht over een grijswig.",
+      "case": "Verliest op beide assen: vakjargon zonder relatie met reizen.",
+      "risk": "Ontoegankelijk voor familie.",
+      "kept": "Tabular figures; doorgestreept is uitgeschakeld.",
+      "hero": "https://impeccable.style/worlds/cards/operate-b-exposure-record-zone-sheets-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "De categoriestandaard",
+    "thesis": "Wat vluchtzoekers als Google Flights en Skyscanner tonen, strak uitgevoerd.",
+    "palette": ["#FFFFFF", "#202124", "#1A73E8"],
+    "materials": ["witte kaarten", "pill-filters"],
+    "viewport": "Zoekbalk bovenaan, filters links, resultaatkaarten rechts.",
+    "risk": "Niet te onderscheiden van de tools die je al gebruikt."
+  },
+  "steer": true
+}
