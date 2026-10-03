@@ -226,6 +226,9 @@ def airport_score(iata: str, ap: dict) -> int:
     return 0
 
 
+_HEAD_START_KM = {15: 150, 5: 50}
+
+
 def find_nearby_airports(
     query: str,
     radius_km: int = DEFAULT_RADIUS_DEST,
@@ -236,7 +239,7 @@ def find_nearby_airports(
         return None
 
     lat, lon, label = location
-    pinned = iata_code(query)
+    pinned = iata_code(query) or lookup_airport(query)
 
     nearby = []
     for iata, ap in AIRPORT_DB.items():
@@ -247,11 +250,11 @@ def find_nearby_airports(
         if dist <= radius_km:
             nearby.append((sc, dist, iata, ap))
 
-    # Sort by composite: score * 10 - distance.
-    # large_airport (15) vs medium (5) = 100km equivalent advantage: big airports still lead,
+    # Sort by head start minus distance. A large airport leads a medium one by 100km, so it wins,
     # but not over a much closer one ("Costa Brava" gives Girona at 27km before Toulouse at 250km).
-    # A typed IATA code always comes first, so "GRO" gives Girona rather than nearby Barcelona.
-    nearby.sort(key=lambda x: (x[2] != pinned, -(x[0] * 10 - x[1])))
+    # Small airports with scheduled service are mostly island hops (Borkum, Juist): 150km behind medium.
+    # The typed airport always comes first: "GRO" gives Girona, "Paros" gives Paros.
+    nearby.sort(key=lambda x: (x[2] != pinned, -(_HEAD_START_KM.get(x[0], -100) - x[1])))
     nearby = nearby[:max_count]
 
     if not nearby:
