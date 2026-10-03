@@ -27,4 +27,4 @@ Flight Finder sweeps many origin airports × destination airports × dates on Go
 - Dev server: `python3 -m uvicorn main:app --port 8000`, without `--reload`. Restart it after every Python change.
 - The owner often has port 8000 open in a browser. Try Python changes on port 8001 first, then restart 8000.
 - The repo has no test suite. Check backend changes with `curl` against the endpoints, and UI changes in a browser at desktop width and at 390px with an error-free console.
-- Real searches call Google Flights (~0.8 s per route) and Nominatim. Keep test searches small: one destination airport, no flex.
+- Real searches call Google Flights (~0.8 s per route); place names call Nominatim, then Wikidata. Nominatim blocks bursts above about 1 request per second. Keep test searches small: one destination airport, no flex.

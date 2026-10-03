@@ -45,7 +45,7 @@ Zonder `--to` en `--depart` stelt het script de vragen zelf. `python3 flight_fin
 | Bestand | Inhoud |
 |---|---|
 | `main.py` | FastAPI-server. Start zoekopdrachten en stuurt de voortgang via Server-Sent Events. |
-| `flight_finder.py` | Luchthavens zoeken (airportsdata, plus OpenStreetMap Nominatim voor plaatsnamen en postcodes), Google Flights bevragen via fast-flights, en de command line. |
+| `flight_finder.py` | Luchthavens zoeken (airportsdata, plus OpenStreetMap Nominatim en Wikidata voor plaatsnamen, streken en postcodes), Google Flights bevragen via fast-flights, en de command line. |
 | `templates/index.html` | De hele interface, met CSS en JavaScript inline. Er is geen buildstap. |
 | `DESIGN.md`, `PRODUCT.md` | Ontwerpsysteem en productcontext. |
 | `scan_torun.py`, `make_torun_pdf.py` | Losse scripts voor één reis naar Toruń. Het pdf-script heeft ook `reportlab` nodig. |

@@ -168,33 +168,65 @@ def resolve_location(query: str) -> tuple[float, float, str] | None:
         ap = AIRPORT_DB[code]
         return ap["lat"], ap["lon"], f"{ap['city']} ({code})"
 
-    # 3. Nominatim geocoding fallback (OpenStreetMap, no API key needed).
     # Only hits are cached, so a network failure can be retried.
     key = q.lower()
-    if key in _geocoded:
-        return _geocoded[key]
-    try:
+    if key not in _geocoded:
         client = Client(impersonate=IMPERSONATE, verify=False)
-        res = client.get(
-            "https://nominatim.openstreetmap.org/search",
-            params={"q": q, "format": "json", "limit": "1"},
-            headers={"User-Agent": "FlightFinder/1.0"},
-        )
-        data = res.json()
-        if data:
-            lat, lon = float(data[0]["lat"]), float(data[0]["lon"])
-            parts = [p.strip() for p in data[0].get("display_name", q).split(",")]
-            # A postcode alone means little to people, so add the town: "7991 AW, Dwingeloo".
-            label = ", ".join(parts[:2]) if data[0].get("type") == "postcode" else parts[0]
-            _geocoded[key] = (lat, lon, f"{label} (via geocoding)")
-            return _geocoded[key]
-    except Exception:
-        pass
-
-    return None
+        for geocode in (_nominatim, _wikidata):
+            try:
+                hit = geocode(client, q)
+            except Exception:
+                continue
+            if hit:
+                lat, lon, label = hit
+                _geocoded[key] = (lat, lon, f"{label} (via geocoding)")
+                break
+    return _geocoded.get(key)
 
 
 _geocoded: dict[str, tuple[float, float, str]] = {}
+_GEO_HEADERS = {"User-Agent": "FlightFinder/1.0 (https://github.com/Emilvooo/flight-finder)"}
+
+
+def _nominatim(client: Client, q: str) -> tuple[float, float, str] | None:
+    res = client.get(
+        "https://nominatim.openstreetmap.org/search",
+        params={"q": q, "format": "json", "limit": "5"},
+        headers=_GEO_HEADERS,
+    )
+    # Dutch streets are often named after destinations ("Cycladen" in Amersfoort),
+    # so take a place or region, or a well-known landmark, never a plain street or hotel.
+    for d in res.json():
+        if d.get("class") in ("place", "boundary") or float(d.get("importance") or 0) >= 0.2:
+            parts = [p.strip() for p in d.get("display_name", q).split(",")]
+            # A postcode alone means little to people, so add the town: "7991 AW, Dwingeloo".
+            label = ", ".join(parts[:2]) if d.get("type") == "postcode" else parts[0]
+            return float(d["lat"]), float(d["lon"]), label
+    return None
+
+
+def _wikidata(client: Client, q: str) -> tuple[float, float, str] | None:
+    # Knows the Dutch names OpenStreetMap lacks, such as "Cycladen" or "Dolomieten".
+    # The best-known item with coordinates wins: a region has dozens of Wikipedia articles, a street none.
+    api = "https://www.wikidata.org/w/api.php"
+    found = client.get(
+        api,
+        params={"action": "wbsearchentities", "search": q, "language": "nl", "uselang": "nl", "type": "item", "limit": "10", "format": "json"},
+        headers=_GEO_HEADERS,
+    ).json()["search"]
+    if not found:
+        return None
+    entities = client.get(
+        api,
+        params={"action": "wbgetentities", "ids": "|".join(f["id"] for f in found), "props": "claims|sitelinks|labels", "languages": "nl", "format": "json"},
+        headers=_GEO_HEADERS,
+    ).json()["entities"]
+    places = [e for e in entities.values() if "P625" in e.get("claims", {}) and e.get("sitelinks")]
+    if not places:
+        return None
+    best = max(places, key=lambda e: len(e["sitelinks"]))
+    coord = best["claims"]["P625"][0]["mainsnak"]["datavalue"]["value"]
+    return coord["latitude"], coord["longitude"], best["labels"].get("nl", {}).get("value", q)
 
 
 def airport_score(iata: str, ap: dict) -> int:
