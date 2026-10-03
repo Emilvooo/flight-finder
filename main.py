@@ -11,6 +11,7 @@ from typing import Optional
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from flight_finder import (
@@ -96,13 +97,17 @@ async def _lifespan(app: FastAPI):
 
 app = FastAPI(title="Flight Finder", lifespan=_lifespan)
 templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # ── Pages ────────────────────────────────────────────────
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    # Link previews need an absolute image URL; behind nginx the scheme comes from X-Forwarded-Proto.
+    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+    base_url = f"{scheme}://{request.headers.get('host', request.url.netloc)}"
+    return templates.TemplateResponse("index.html", {"request": request, "base_url": base_url})
 
 
 # ── API: Airport Discovery ───────────────────────────────
