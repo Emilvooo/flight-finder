@@ -48,7 +48,6 @@ Zonder `--to` en `--depart` stelt het script de vragen zelf. `python3 flight_fin
 | `flight_finder.py` | Luchthavens zoeken (airportsdata, plus OpenStreetMap Nominatim en Wikidata voor plaatsnamen, streken en postcodes), Google Flights bevragen via fast-flights, en de command line. |
 | `templates/index.html` | De hele interface, met CSS en JavaScript inline. Er is geen buildstap. |
 | `DESIGN.md`, `PRODUCT.md` | Ontwerpsysteem en productcontext. |
-| `scan_torun.py`, `make_torun_pdf.py` | Losse scripts voor één reis naar Toruń. Het pdf-script heeft ook `reportlab` nodig. |
 
 Een zoekopdracht bevraagt maximaal 10 routes tegelijk, en elke route duurt ongeveer 0,8 seconde. Resultaten per route blijven 10 minuten bewaard, dus dezelfde of een aangepaste zoekopdracht is daarna bijna direct klaar.
 
